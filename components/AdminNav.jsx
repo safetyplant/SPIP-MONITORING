@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
 const ITEMS = [
-  ['/admin', 'Ringkasan'],
-  ['/admin/achievement', 'Achievement'],
-  ['/admin/mapping', 'Mapping'],
+  ['/admin', 'Dashboard Summary SPIP'],
+  ['/admin/achievement', 'Achievement SPIP'],
+  ['/admin/mapping', 'Mapping Detail Jenis & Lokasi'],
   ['/admin/temuan', 'Temuan'],
   ['/admin/qr', 'QR'],
   ['/admin/checklist', 'Checklist'],

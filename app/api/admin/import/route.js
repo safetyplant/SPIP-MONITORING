@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { createHash, randomUUID } from 'node:crypto';
+import { randomUUID } from 'node:crypto';
+import { keyOf } from '@/lib/assetKey';
 import { db } from '@/lib/db';
 import { resolveKategori } from '@/lib/spip';
 import { isDate } from '@/lib/format';
@@ -10,12 +11,6 @@ export const maxDuration = 60;
 const str = (v, n = 300) => String(v ?? '').replace(/\s+/g, ' ').trim().slice(0, n);
 const dt = (v) => (isDate(v) ? v : '');
 const BATCH_RE = /^[0-9a-f-]{36}$/;
-
-function keyOf(r, seq) {
-  const base = [r.distrik, r.kategori, r.jenis, r.detail_jenis, r.lokasi].join('|').toLowerCase();
-  const h = createHash('sha1').update(base).digest('hex');
-  return seq > 1 ? `${h}#${seq}` : h;
-}
 
 // Aturan saat baris sudah ada: data master selalu diperbarui, data inspeksi hanya dimajukan
 // bila tanggal inspeksi di file sama atau lebih baru dari yang ada di database.

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import Logos from '@/components/Logos';
 
 /* ---------- ikon ---------- */
 const Svg = ({ children, size = 20 }) => (
@@ -203,6 +204,7 @@ export default function Checklist({ asset, kat, tplKey, templates, history, find
     <div className={`ck-page kat-${kat.key}`}>
       <header className="ck-hero">
         <div className="ck-wrap">
+          <Logos size="sm" />
           <p className="ck-eyebrow">SPIP Monitor · Checklist inspeksi</p>
           <div className="ck-katchip">
             <span className="ck-katicon"><KatIcon /></span>

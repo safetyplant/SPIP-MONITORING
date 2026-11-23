@@ -34,6 +34,7 @@ git push -u origin main
 |---|---|
 | `DATABASE_URL` | connection string Neon |
 | `ADMIN_PASSWORD` | password login admin |
+| `EDIT_PASSWORD` | kata sandi untuk membuka kunci edit data (tambah, ubah, hapus aset) |
 | `SESSION_SECRET` | teks acak panjang (opsional, bawaannya memakai ADMIN_PASSWORD) |
 | `APP_URL` | opsional, mis. `https://spip.perusahaan.com` agar link dan QR memakai domain tetap |
 
@@ -46,6 +47,14 @@ git push -u origin main
 3. Pemeriksa scan QR, isi NRP dan nama, jawab checklist (Sesuai / Temuan / N/A), kirim.
 4. Dashboard otomatis menghitung achievement. Temuan ditindaklanjuti lewat link yang sama atau menu Temuan.
 5. **Data & Excel** juga bisa mengunduh data aset beserta link, dan riwayat inspeksi lengkap dengan NRP.
+
+## Edit data langsung
+
+Di menu **Mapping Detail Jenis & Lokasi**, klik **Buka kunci** lalu masukkan `EDIT_PASSWORD`. Setelah terbuka (berlaku 2 jam) muncul tombol **Tambah aset** dan **Edit** di tiap baris, termasuk hapus aset. Tanpa kata sandi itu, data hanya bisa dilihat. Isi `EDIT_PASSWORD` di Environment Variables hosting, jangan di file di repo.
+
+## Logo
+
+Logo KPP Mining, CISS, dan ASTO ada di `public/logos` (kpp.png, ciss.png, asto.png). Ganti file itu untuk mengubah logo.
 
 ## Catatan
 

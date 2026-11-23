@@ -2,6 +2,7 @@
 
 import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Logos from '@/components/Logos';
 
 function LoginForm() {
   const router = useRouter();
@@ -37,7 +38,7 @@ function LoginForm() {
 
   return (
     <form className="login-card" onSubmit={submit}>
-      <div className="brand-mark" aria-hidden="true">S</div>
+      <Logos />
       <h1>SPIP Monitor</h1>
       <p className="muted">Masuk untuk membuka dashboard, impor data, dan cetak QR.</p>
       <label className="field">

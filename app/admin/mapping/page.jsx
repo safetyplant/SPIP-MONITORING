@@ -1,4 +1,7 @@
 import Link from 'next/link';
+import { cookies } from 'next/headers';
+import { EditBar, RowEdit } from '@/components/AssetEditor';
+import { EDIT_COOKIE, verifyToken } from '@/lib/auth';
 import FilterForm from '@/components/FilterForm';
 import KatBadge from '@/components/KatBadge';
 import CopyButton from '@/components/CopyButton';
@@ -53,6 +56,7 @@ export default async function Page({ searchParams }) {
     .forEach((t) => add("lower(a.distrik || ' ' || a.dept || ' ' || a.kategori || ' ' || a.jenis || ' ' || a.detail_jenis || ' ' || a.lokasi) LIKE ?", `%${t}%`));
   const where = conds.length ? `WHERE ${conds.join(' AND ')}` : '';
 
+  const canEdit = await verifyToken(cookies().get(EDIT_COOKIE)?.value, 'edit');
   const sql = db();
   const [options, totalRows, rows] = await Promise.all([
     filterOptions(),
@@ -75,9 +79,11 @@ export default async function Page({ searchParams }) {
   return (
     <>
       <div className="page-h">
-        <h1>Mapping aset</h1>
+        <h1>Mapping Detail Jenis &amp; Lokasi</h1>
         <p className="muted">{total.toLocaleString('id-ID')} aset. Setiap aset punya link checklist sendiri.</p>
       </div>
+
+      <EditBar canEdit={canEdit} options={options} />
 
       <FilterForm f={f} options={options} action="/admin/mapping" period={false}>
         <label className="field">
@@ -125,6 +131,7 @@ export default async function Page({ searchParams }) {
               <th>Inspeksi terakhir</th>
               <th>Status</th>
               <th>Link</th>
+              {canEdit && <th>Edit</th>}
             </tr>
           </thead>
           <tbody>
@@ -143,10 +150,15 @@ export default async function Page({ searchParams }) {
                   <Link className="btn sm primary" href={`/i/${r.slug}`} target="_blank">Buka</Link>{' '}
                   <CopyButton text={`${base}/i/${r.slug}`} label="Salin" />
                 </td>
+                {canEdit && (
+                  <td className="nowrap">
+                    <RowEdit asset={r} options={options} />
+                  </td>
+                )}
               </tr>
             ))}
             {!rows.length && (
-              <tr><td className="l muted" colSpan={10} style={{ padding: 18 }}>Tidak ada aset yang cocok dengan filter.</td></tr>
+              <tr><td className="l muted" colSpan={canEdit ? 11 : 10} style={{ padding: 18 }}>Tidak ada aset yang cocok dengan filter.</td></tr>
             )}
           </tbody>
         </table>
