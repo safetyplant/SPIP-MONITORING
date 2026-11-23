@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import Logos from '@/components/Logos';
 
 const ITEMS = [
   ['/admin', 'Dashboard Summary SPIP'],
@@ -30,6 +31,7 @@ export default function AdminNav() {
           <span className="brand-mark" aria-hidden="true">S</span>
           <span>SPIP Monitor</span>
         </Link>
+        <Logos size="xs" />
         <nav className="nav" aria-label="Menu admin">
           {ITEMS.map(([href, label]) => {
             const on = href === '/admin' ? path === href : path.startsWith(href);
@@ -40,7 +42,7 @@ export default function AdminNav() {
             );
           })}
         </nav>
-        <button type="button" className="btn sm ghost" onClick={logout}>
+        <button type="button" className="btn sm logout" onClick={logout}>
           Keluar
         </button>
       </div>

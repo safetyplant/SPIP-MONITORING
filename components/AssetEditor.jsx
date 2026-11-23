@@ -51,7 +51,6 @@ function Form({ asset, options, onClose }) {
       onClose();
     } catch (e) {
       setErr(e.message);
-      if (e.status === 403) router.refresh();
       setBusy(false);
     }
   }
@@ -124,61 +123,14 @@ function Form({ asset, options, onClose }) {
   );
 }
 
-// Bilah kunci edit di atas tabel: buka kunci dengan kata sandi edit, tambah aset, dan kunci kembali.
-export function EditBar({ canEdit, options }) {
-  const router = useRouter();
-  const [open, setOpen] = useState(false);
-  const [pw, setPw] = useState('');
-  const [err, setErr] = useState('');
-  const [busy, setBusy] = useState(false);
+// Bilah di atas tabel: tambah aset baru. Hanya admin yang bisa membuka halaman ini.
+export function EditBar({ options }) {
   const [adding, setAdding] = useState(false);
-
-  async function unlock(e) {
-    e.preventDefault();
-    setBusy(true);
-    setErr('');
-    try {
-      await call({ action: 'unlock', password: pw });
-      setPw('');
-      setOpen(false);
-      router.refresh();
-    } catch (x) {
-      setErr(x.message);
-    }
-    setBusy(false);
-  }
-
-  async function lock() {
-    await call({ action: 'lock' }).catch(() => {});
-    router.refresh();
-  }
-
-  if (canEdit) {
-    return (
-      <div className="lockbar open">
-        <span><b>Mode edit aktif.</b> Berlaku 2 jam.</span>
-        <span className="row">
-          <button type="button" className="btn sm primary" onClick={() => setAdding(true)}>Tambah aset</button>
-          <button type="button" className="btn sm" onClick={lock}>Kunci lagi</button>
-        </span>
-        {adding && <Form asset={null} options={options} onClose={() => setAdding(false)} />}
-      </div>
-    );
-  }
-
   return (
-    <div className="lockbar">
-      <span><b>Edit data terkunci.</b> Masukkan kata sandi edit untuk menambah, mengubah, atau menghapus aset.</span>
-      {!open ? (
-        <button type="button" className="btn sm primary" onClick={() => setOpen(true)}>Buka kunci</button>
-      ) : (
-        <form className="row" onSubmit={unlock}>
-          <input type="password" autoComplete="off" placeholder="Kata sandi edit" value={pw} onChange={(e) => setPw(e.target.value)} autoFocus required />
-          <button className="btn sm primary" disabled={busy}>{busy ? 'Memeriksa…' : 'Buka'}</button>
-          <button type="button" className="btn sm" onClick={() => { setOpen(false); setErr(''); }}>Batal</button>
-        </form>
-      )}
-      {err && <span className="form-error" role="alert">{err}</span>}
+    <div className="lockbar open">
+      <span>Tambah atau ubah data aset langsung di sini.</span>
+      <button type="button" className="btn sm primary" onClick={() => setAdding(true)}>Tambah aset</button>
+      {adding && <Form asset={null} options={options} onClose={() => setAdding(false)} />}
     </div>
   );
 }

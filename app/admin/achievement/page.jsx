@@ -4,6 +4,8 @@ import { parseFilters, statsBy, filterOptions, sumRows, byKategoriOrder } from '
 import { fmt, pct, achClass } from '@/lib/format';
 
 export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
+export const revalidate = 0;
 export const metadata = { title: 'Achievement' };
 
 function Row({ label, s, level, kategori }) {

@@ -1,7 +1,5 @@
 import Link from 'next/link';
-import { cookies } from 'next/headers';
 import { EditBar, RowEdit } from '@/components/AssetEditor';
-import { EDIT_COOKIE, verifyToken } from '@/lib/auth';
 import FilterForm from '@/components/FilterForm';
 import KatBadge from '@/components/KatBadge';
 import CopyButton from '@/components/CopyButton';
@@ -12,6 +10,8 @@ import { baseUrl } from '@/lib/url';
 import { qs } from '@/lib/qs';
 
 export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
+export const revalidate = 0;
 export const metadata = { title: 'Mapping' };
 
 const PAGE = 50;
@@ -56,7 +56,7 @@ export default async function Page({ searchParams }) {
     .forEach((t) => add("lower(a.distrik || ' ' || a.dept || ' ' || a.kategori || ' ' || a.jenis || ' ' || a.detail_jenis || ' ' || a.lokasi) LIKE ?", `%${t}%`));
   const where = conds.length ? `WHERE ${conds.join(' AND ')}` : '';
 
-  const canEdit = await verifyToken(cookies().get(EDIT_COOKIE)?.value, 'edit');
+  const canEdit = true;
   const sql = db();
   const [options, totalRows, rows] = await Promise.all([
     filterOptions(),
@@ -83,7 +83,7 @@ export default async function Page({ searchParams }) {
         <p className="muted">{total.toLocaleString('id-ID')} aset. Setiap aset punya link checklist sendiri.</p>
       </div>
 
-      <EditBar canEdit={canEdit} options={options} />
+      <EditBar options={options} />
 
       <FilterForm f={f} options={options} action="/admin/mapping" period={false}>
         <label className="field">

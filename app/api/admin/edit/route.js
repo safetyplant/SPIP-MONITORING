@@ -1,6 +1,4 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { EDIT_COOKIE, checkEditPassword, createToken, verifyToken } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { keyOf } from '@/lib/assetKey';
 import { resolveKategori } from '@/lib/spip';
@@ -11,7 +9,6 @@ export const runtime = 'nodejs';
 
 const bad = (error, status = 400) => NextResponse.json({ error }, { status });
 const str = (v, n = 300) => String(v ?? '').replace(/\s+/g, ' ').trim().slice(0, n);
-const secure = process.env.NODE_ENV === 'production';
 
 function cleanAsset(d) {
   const r = {
@@ -39,30 +36,11 @@ function cleanAsset(d) {
 
 const DUP = 'Aset dengan Distrik, Kategori, Jenis, Detail jenis, dan Lokasi yang sama sudah ada.';
 
-// Edit data langsung di aplikasi. Hanya bisa dipakai setelah mode edit dibuka dengan kata sandi edit (EDIT_PASSWORD).
+// Edit data langsung di aplikasi. Dilindungi middleware: hanya admin yang sudah login (/api/admin/*).
 export async function POST(req) {
   const body = await req.json().catch(() => null);
   if (!body) return bad('Data tidak terbaca.');
 
-  if (body.action === 'unlock') {
-    if (!(await checkEditPassword(body.password))) {
-      await new Promise((r) => setTimeout(r, 800));
-      return bad('Kata sandi edit salah.', 401);
-    }
-    const res = NextResponse.json({ ok: true });
-    res.cookies.set({ name: EDIT_COOKIE, value: await createToken(2, 'edit'), httpOnly: true, secure, sameSite: 'lax', path: '/', maxAge: 2 * 3600 });
-    return res;
-  }
-
-  if (body.action === 'lock') {
-    const res = NextResponse.json({ ok: true });
-    res.cookies.set({ name: EDIT_COOKIE, value: '', httpOnly: true, secure, sameSite: 'lax', path: '/', maxAge: 0 });
-    return res;
-  }
-
-  if (!(await verifyToken(cookies().get(EDIT_COOKIE)?.value, 'edit'))) {
-    return bad('Mode edit terkunci. Masukkan kata sandi edit.', 403);
-  }
   const sql = db();
 
   if (body.action === 'save') {

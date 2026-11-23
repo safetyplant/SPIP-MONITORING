@@ -4,6 +4,8 @@ import { db } from '@/lib/db';
 import { fmtDate } from '@/lib/format';
 
 export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
+export const revalidate = 0;
 export const metadata = { title: 'Temuan' };
 
 export default async function Page() {

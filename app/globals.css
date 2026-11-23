@@ -83,11 +83,11 @@ img { max-width: 100%; }
 button, input, select, textarea { font: inherit; color: inherit; }
 
 /* ---------- tata letak ---------- */
-.wrap { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
+.wrap { width: 100%; max-width: none; margin: 0; padding: 0 clamp(12px, 2vw, 28px); }
 .page { padding-block: 20px 56px; }
 .page-h { margin-bottom: 16px; }
 .topbar { background: var(--navy); color: #fff; position: sticky; top: 0; z-index: 20; }
-.topbar-in { max-width: 1180px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.topbar-in { width: 100%; max-width: none; margin: 0; padding: 8px clamp(12px, 2vw, 28px); display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .brand { display: flex; align-items: center; gap: 10px; font-family: var(--font-head); font-weight: 700; color: #fff; text-decoration: none; }
 .brand-mark { width: 32px; height: 32px; border-radius: 9px; background: var(--accent); color: var(--navy); display: grid; place-items: center; font-weight: 800; }
 .nav { display: flex; gap: 4px; overflow-x: auto; flex: 1; min-width: 0; }
@@ -326,11 +326,11 @@ tr.dim td { color: var(--muted); }
 .tb-panel-b { padding: 10px 6px 6px; }
 .tb-note { padding: 0 8px 6px; margin: 4px 0 0; }
 .gb-scroll { overflow-x: auto; padding-bottom: 4px; }
-.gb-row { display: flex; width: max-content; min-width: 100%; }
-.gb-group { flex: none; width: 100px; border-right: 1px solid var(--line); display: flex; flex-direction: column; }
+.gb-row { display: flex; width: 100%; min-width: max-content; }
+.gb-group { flex: 1 0 100px; min-width: 100px; border-right: 1px solid var(--line); display: flex; flex-direction: column; }
 .gb-group:last-child { border-right: 0; }
 .gb-plot { display: flex; align-items: flex-end; justify-content: center; gap: 2px; padding: 0 4px; border-bottom: 1px solid var(--muted); }
-.gb-bar { width: 15px; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; }
+.gb-bar { flex: 1 1 0; max-width: 24px; min-width: 12px; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; }
 .gb-bar i { display: block; width: 100%; height: calc((100% - 44px) * var(--r, 0)); min-height: 1px; }
 .gb-val { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 10px; font-weight: 600; margin-bottom: 2px; white-space: nowrap; color: var(--fg); }
 .gb-label { padding: 6px 4px 4px; font-size: 11px; font-weight: 600; text-align: center; line-height: 1.25; overflow-wrap: anywhere; min-height: 46px; }
@@ -363,3 +363,9 @@ tr.dim td { color: var(--muted); }
 .chk { margin: 4px 0 14px; gap: 6px 18px; }
 .chk label { display: flex; align-items: center; gap: 6px; font-size: 14px; }
 @media (max-width: 520px) { .form-grid { grid-template-columns: 1fr; } }
+
+/* ---------- logo di navbar & tombol keluar ---------- */
+.logos-xs { --ls: 0.6; padding: 4px 10px; gap: 8px; border-radius: 10px; }
+.topbar .logos-xs { flex: none; }
+.nav .btn.logout, .topbar .btn.logout { background: transparent; color: #fff; border: 1px solid rgba(255, 255, 255, 0.55); }
+.topbar .btn.logout:hover { background: rgba(255, 255, 255, 0.14); }

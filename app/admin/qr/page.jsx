@@ -9,6 +9,8 @@ import { baseUrl } from '@/lib/url';
 import { qs } from '@/lib/qs';
 
 export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
+export const revalidate = 0;
 export const metadata = { title: 'QR aset' };
 
 const PAGE = 24;

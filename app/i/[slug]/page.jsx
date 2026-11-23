@@ -7,6 +7,8 @@ import { SLUG_RE } from '@/lib/validate';
 import Checklist from './Checklist';
 
 export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
+export const revalidate = 0;
 
 async function loadAsset(slug) {
   if (!SLUG_RE.test(slug)) return null;

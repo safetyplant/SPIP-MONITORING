@@ -10,6 +10,8 @@ import { KATEGORI, KATEGORI_ORDER } from '@/lib/spip';
 import { qs } from '@/lib/qs';
 
 export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
+export const revalidate = 0;
 export const metadata = { title: 'Dashboard Summary SPIP' };
 
 const MAX_DETAIL = 40;
@@ -70,6 +72,11 @@ export default async function Page({ searchParams }) {
 
   if (!meta[0].n) {
     return (
+      <>
+      <header className="tb-banner">
+        <Logos />
+        <h1>Dashboard Summary SPIP</h1>
+      </header>
       <div className="card empty">
         <h1>Belum ada data aset</h1>
         <p className="muted">Tambahkan aset langsung di aplikasi (buka kunci edit dengan kata sandi edit). Setiap aset otomatis mendapat link dan QR sendiri.</p>
@@ -78,6 +85,7 @@ export default async function Page({ searchParams }) {
           <Link className="btn ghost" href="/admin/import">Atau impor dari Excel</Link>
         </div>
       </div>
+      </>
     );
   }
 
