@@ -66,6 +66,12 @@ function Form({ asset, options, onClose }) {
     <div className="modal-back" role="dialog" aria-modal="true" aria-label={asset ? 'Edit aset' : 'Tambah aset'}>
       <form className="modal" onSubmit={save}>
         <h2>{asset ? 'Edit aset' : 'Tambah aset'}</h2>
+        {asset && (
+          <p className="small muted">
+            Link checklist (bisa dibuka tanpa login):{' '}
+            <a href={`/i/${asset.slug}`} target="_blank" rel="noreferrer">{`${typeof window !== 'undefined' ? window.location.origin : ''}/i/${asset.slug}`}</a>
+          </p>
+        )}
         <div className="form-grid">
           <label className="field">
             <span>Kategori SPIP</span>

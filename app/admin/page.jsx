@@ -72,8 +72,11 @@ export default async function Page({ searchParams }) {
     return (
       <div className="card empty">
         <h1>Belum ada data aset</h1>
-        <p className="muted">Impor daftar aset dari Excel. Setiap aset otomatis mendapat link dan QR sendiri.</p>
-        <Link className="btn primary" href="/admin/import">Buka Data &amp; Excel</Link>
+        <p className="muted">Tambahkan aset langsung di aplikasi (buka kunci edit dengan kata sandi edit). Setiap aset otomatis mendapat link dan QR sendiri.</p>
+        <div className="row" style={{ justifyContent: 'center' }}>
+          <Link className="btn primary" href="/admin/mapping">Tambah aset langsung</Link>
+          <Link className="btn ghost" href="/admin/import">Atau impor dari Excel</Link>
+        </div>
       </div>
     );
   }

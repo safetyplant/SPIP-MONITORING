@@ -130,7 +130,7 @@ export default async function Page({ searchParams }) {
               <th className="l">Periode</th>
               <th>Inspeksi terakhir</th>
               <th>Status</th>
-              <th>Link</th>
+              <th>Link checklist</th>
               {canEdit && <th>Edit</th>}
             </tr>
           </thead>
@@ -147,7 +147,7 @@ export default async function Page({ searchParams }) {
                 <td>{fmtDate(r.last_inspection)}</td>
                 <td><Status r={r} /></td>
                 <td className="nowrap">
-                  <Link className="btn sm primary" href={`/i/${r.slug}`} target="_blank">Buka</Link>{' '}
+                  <Link className="btn sm primary" href={`/i/${r.slug}`} target="_blank">Isi checklist</Link>{' '}
                   <CopyButton text={`${base}/i/${r.slug}`} label="Salin" />
                 </td>
                 {canEdit && (

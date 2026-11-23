@@ -45,7 +45,6 @@ export async function POST(req) {
   if (!body) return bad('Data tidak terbaca.');
 
   if (body.action === 'unlock') {
-    if (!process.env.EDIT_PASSWORD) return bad('EDIT_PASSWORD belum diatur di environment variable server.', 500);
     if (!(await checkEditPassword(body.password))) {
       await new Promise((r) => setTimeout(r, 800));
       return bad('Kata sandi edit salah.', 401);
