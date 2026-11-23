@@ -33,7 +33,7 @@ export default async function Page({ searchParams }) {
   if (f.k) add('a.kategori = ?', f.k);
   if (f.j) add('a.jenis = ?', f.j);
   q.toLowerCase().split(/\s+/).filter(Boolean).slice(0, 6)
-    .forEach((t) => add("lower(a.jenis || ' ' || a.detail_jenis || ' ' || a.lokasi) LIKE ?", `%${t}%`));
+    .forEach((t) => add("lower(a.jenis || ' ' || a.detail_jenis || ' ' || a.lokasi || ' ' || a.kode_aset) LIKE ?", `%${t}%`));
   const where = `WHERE ${conds.join(' AND ')}`;
 
   const sql = db();
@@ -41,7 +41,7 @@ export default async function Page({ searchParams }) {
     filterOptions(),
     sql.query(`SELECT COUNT(*)::int AS n FROM assets a ${where}`, params),
     sql.query(
-      `SELECT a.slug, a.kategori, a.jenis, a.detail_jenis, a.lokasi, a.distrik
+      `SELECT a.slug, a.kategori, a.jenis, a.detail_jenis, a.lokasi, a.kode_aset, a.distrik
          FROM assets a ${where}
         ORDER BY a.kategori, a.jenis, a.detail_jenis, a.lokasi
         LIMIT ${PAGE} OFFSET ${(page - 1) * PAGE}`,
@@ -69,7 +69,7 @@ export default async function Page({ searchParams }) {
         <FilterForm f={f} options={options} action="/admin/qr" period={false}>
           <label className="field">
             <span>Cari</span>
-            <input type="search" name="q" defaultValue={q} placeholder="jenis, detail, lokasi…" />
+            <input type="search" name="q" defaultValue={q} placeholder="kode aset, jenis, detail, lokasi…" />
           </label>
         </FilterForm>
       </div>
@@ -84,6 +84,7 @@ export default async function Page({ searchParams }) {
             <div className="qr-img" dangerouslySetInnerHTML={{ __html: r.svg }} />
             <figcaption>
               <KatBadge kategori={r.kategori} />
+              {r.kode_aset ? <b className="qr-kode">{r.kode_aset}</b> : null}
               <strong>{r.detail_jenis || r.jenis}</strong>
               <span>{r.lokasi}</span>
               <small>{base.replace(/^https?:\/\//, '')}/i/{r.slug}</small>

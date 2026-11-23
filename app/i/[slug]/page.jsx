@@ -13,7 +13,7 @@ export const revalidate = 0;
 async function loadAsset(slug) {
   if (!SLUG_RE.test(slug)) return null;
   const rows = await db()`
-    SELECT id, slug, distrik, dept, kategori, jenis, detail_jenis, lokasi, periode, is_active,
+    SELECT id, slug, distrik, dept, kategori, jenis, detail_jenis, lokasi, kode_aset, periode, is_active,
            last_inspection::text AS last_inspection, has_finding, followed_up
       FROM assets WHERE slug = ${slug}`;
   return rows[0] || null;
@@ -58,6 +58,7 @@ export default async function Page({ params }) {
         jenis: asset.jenis,
         detail: asset.detail_jenis,
         lokasi: asset.lokasi,
+        kode: asset.kode_aset,
         periode: asset.periode,
         last: asset.last_inspection,
         active: asset.is_active,

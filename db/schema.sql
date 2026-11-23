@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS assets (
   jenis TEXT NOT NULL DEFAULT '',
   detail_jenis TEXT NOT NULL DEFAULT '',
   lokasi TEXT NOT NULL DEFAULT '',
+  kode_aset TEXT NOT NULL DEFAULT '',
   periode TEXT NOT NULL DEFAULT '',
   start_date DATE,
   end_date DATE,
@@ -46,3 +47,8 @@ CREATE TABLE IF NOT EXISTS inspections (
 CREATE INDEX IF NOT EXISTS inspections_asset_idx ON inspections (asset_id, inspected_on DESC);
 
 CREATE INDEX IF NOT EXISTS inspections_nrp_idx ON inspections (nrp);
+
+-- Kode aset / kode unit / kode alat (untuk database lama yang dibuat sebelum kolom ini ada)
+ALTER TABLE assets ADD COLUMN IF NOT EXISTS kode_aset TEXT NOT NULL DEFAULT '';
+
+CREATE INDEX IF NOT EXISTS assets_kode_idx ON assets (kode_aset);

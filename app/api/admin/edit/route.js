@@ -17,6 +17,7 @@ function cleanAsset(d) {
     jenis: str(d.jenis),
     detail_jenis: str(d.detail_jenis),
     lokasi: str(d.lokasi),
+    kode_aset: str(d.kode_aset, 60),
     periode: str(d.periode, 40),
   };
   if (!r.jenis && !r.detail_jenis && !r.lokasi) return { error: 'Isi minimal Jenis, Detail jenis, atau Lokasi.' };
@@ -34,7 +35,7 @@ function cleanAsset(d) {
   return { r };
 }
 
-const DUP = 'Aset dengan Distrik, Kategori, Jenis, Detail jenis, dan Lokasi yang sama sudah ada.';
+const DUP = 'Aset dengan Distrik, Kategori, Jenis, Detail jenis, Lokasi, dan Kode aset yang sama sudah ada. Beri kode aset yang berbeda.';
 
 // Edit data langsung di aplikasi. Dilindungi middleware: hanya admin yang sudah login (/api/admin/*).
 export async function POST(req) {
@@ -51,9 +52,9 @@ export async function POST(req) {
     try {
       if (!slug) {
         const rows = await sql`
-          INSERT INTO assets (key_hash, distrik, dept, kategori, jenis, detail_jenis, lokasi, periode, start_date, end_date,
+          INSERT INTO assets (key_hash, distrik, dept, kategori, jenis, detail_jenis, lokasi, kode_aset, periode, start_date, end_date,
                               is_active, is_plan, first_inspection, last_inspection, has_finding, followed_up, import_batch)
-          VALUES (${keyOf(r)}, ${r.distrik}, ${r.dept}, ${r.kategori}, ${r.jenis}, ${r.detail_jenis}, ${r.lokasi}, ${r.periode},
+          VALUES (${keyOf(r)}, ${r.distrik}, ${r.dept}, ${r.kategori}, ${r.jenis}, ${r.detail_jenis}, ${r.lokasi}, ${r.kode_aset}, ${r.periode},
                   ${r.start_date}::date, ${r.end_date}::date, ${r.is_active}, ${r.is_plan}, ${r.last_inspection}::date,
                   ${r.last_inspection}::date, ${r.has_finding}, ${r.followed_up}, 'manual')
           RETURNING slug`;
@@ -67,7 +68,7 @@ export async function POST(req) {
       await sql`
         UPDATE assets SET
           key_hash = ${keyOf(r, seq)}, distrik = ${r.distrik}, dept = ${r.dept}, kategori = ${r.kategori},
-          jenis = ${r.jenis}, detail_jenis = ${r.detail_jenis}, lokasi = ${r.lokasi}, periode = ${r.periode},
+          jenis = ${r.jenis}, detail_jenis = ${r.detail_jenis}, lokasi = ${r.lokasi}, kode_aset = ${r.kode_aset}, periode = ${r.periode},
           start_date = ${r.start_date}::date, end_date = ${r.end_date}::date,
           is_active = ${r.is_active}, is_plan = ${r.is_plan},
           first_inspection = CASE WHEN ${r.last_inspection}::date IS NULL THEN NULL

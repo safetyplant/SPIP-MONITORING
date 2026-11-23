@@ -53,7 +53,7 @@ export default async function Page({ searchParams }) {
     .split(/\s+/)
     .filter(Boolean)
     .slice(0, 6)
-    .forEach((t) => add("lower(a.distrik || ' ' || a.dept || ' ' || a.kategori || ' ' || a.jenis || ' ' || a.detail_jenis || ' ' || a.lokasi) LIKE ?", `%${t}%`));
+    .forEach((t) => add("lower(a.distrik || ' ' || a.dept || ' ' || a.kategori || ' ' || a.jenis || ' ' || a.detail_jenis || ' ' || a.lokasi || ' ' || a.kode_aset) LIKE ?", `%${t}%`));
   const where = conds.length ? `WHERE ${conds.join(' AND ')}` : '';
 
   const canEdit = true;
@@ -62,7 +62,7 @@ export default async function Page({ searchParams }) {
     filterOptions(),
     sql.query(`SELECT COUNT(*)::int AS n FROM assets a ${where}`, params),
     sql.query(
-      `SELECT a.slug, a.distrik, a.dept, a.kategori, a.jenis, a.detail_jenis, a.lokasi, a.periode,
+      `SELECT a.slug, a.distrik, a.dept, a.kategori, a.jenis, a.detail_jenis, a.lokasi, a.kode_aset, a.periode,
               a.start_date::text AS start_date, a.end_date::text AS end_date, a.is_active, a.is_plan,
               a.last_inspection::text AS last_inspection, a.has_finding, a.followed_up
          FROM assets a ${where}
@@ -88,7 +88,7 @@ export default async function Page({ searchParams }) {
       <FilterForm f={f} options={options} action="/admin/mapping" period={false}>
         <label className="field">
           <span>Cari</span>
-          <input type="search" name="q" defaultValue={q} placeholder="jenis, detail, lokasi…" />
+          <input type="search" name="q" defaultValue={q} placeholder="kode aset, jenis, detail, lokasi…" />
         </label>
         <label className="field">
           <span>Aktif</span>
@@ -121,6 +121,7 @@ export default async function Page({ searchParams }) {
         <table>
           <thead>
             <tr>
+              <th className="l">Kode aset</th>
               <th className="l">Kategori</th>
               <th className="l">Distrik</th>
               <th className="l">Dept</th>
@@ -137,6 +138,7 @@ export default async function Page({ searchParams }) {
           <tbody>
             {rows.map((r) => (
               <tr key={r.slug} className={r.is_active ? '' : 'dim'}>
+                <td className="l nowrap"><strong>{r.kode_aset || <span className="muted">–</span>}</strong></td>
                 <td className="l"><KatBadge kategori={r.kategori} /></td>
                 <td className="l">{r.distrik}</td>
                 <td className="l">{r.dept}</td>
@@ -158,7 +160,7 @@ export default async function Page({ searchParams }) {
               </tr>
             ))}
             {!rows.length && (
-              <tr><td className="l muted" colSpan={canEdit ? 11 : 10} style={{ padding: 18 }}>Tidak ada aset yang cocok dengan filter.</td></tr>
+              <tr><td className="l muted" colSpan={canEdit ? 12 : 11} style={{ padding: 18 }}>Tidak ada aset yang cocok dengan filter.</td></tr>
             )}
           </tbody>
         </table>

@@ -10,7 +10,7 @@ export const metadata = { title: 'Temuan' };
 
 export default async function Page() {
   const rows = await db()`
-    SELECT a.slug, a.distrik, a.kategori, a.jenis, a.detail_jenis, a.lokasi,
+    SELECT a.slug, a.kode_aset, a.distrik, a.kategori, a.jenis, a.detail_jenis, a.lokasi,
            a.last_inspection::text AS last_inspection, i.inspector_name, i.nrp, i.items
       FROM assets a
       LEFT JOIN LATERAL (
@@ -37,7 +37,7 @@ export default async function Page() {
               <div className="row spread">
                 <div>
                   <KatBadge kategori={r.kategori} />
-                  <h3 className="mt">{r.detail_jenis || r.jenis}</h3>
+                  <h3 className="mt">{r.kode_aset ? `${r.kode_aset} · ` : ''}{r.detail_jenis || r.jenis}</h3>
                   <p className="muted small">{r.lokasi} · {r.distrik} · inspeksi {fmtDate(r.last_inspection)} oleh {r.inspector_name} ({r.nrp})</p>
                 </div>
                 <Link className="btn primary" href={`/i/${r.slug}`} target="_blank">Buka link aset</Link>

@@ -25,6 +25,7 @@ export default function Page() {
               <span>{t.n}</span>
               <span className="muted small">{t.q.length} poin</span>
             </summary>
+            {t.ref ? <p className="muted small"><b>Dasar regulasi / acuan:</b> {t.ref}</p> : null}
             <ol>
               {t.q.map((q) => (
                 <li key={q}>{q}</li>

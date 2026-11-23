@@ -22,7 +22,7 @@ async function call(body) {
 }
 
 const EMPTY = {
-  kategori: '', distrik: '', dept: '', jenis: '', detail_jenis: '', lokasi: '', periode: '',
+  kategori: '', distrik: '', dept: '', jenis: '', detail_jenis: '', lokasi: '', kode_aset: '', periode: '',
   start_date: '', end_date: '', is_active: true, is_plan: true, last_inspection: '', has_finding: false, followed_up: false,
 };
 
@@ -72,6 +72,10 @@ function Form({ asset, options, onClose }) {
           </p>
         )}
         <div className="form-grid">
+          <label className="field wide">
+            <span>Kode aset / kode unit / kode alat</span>
+            <input value={v.kode_aset} onChange={set('kode_aset')} maxLength={60} placeholder="mis. DT0001, PNL-WS-01, APAR-WS-03" autoComplete="off" />
+          </label>
           <label className="field">
             <span>Kategori SPIP</span>
             <select value={v.kategori} onChange={set('kategori')}>

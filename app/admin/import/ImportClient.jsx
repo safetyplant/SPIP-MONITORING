@@ -15,6 +15,7 @@ const COLS = {
   jenis: ['jenis'],
   detail_jenis: ['detailjenis', 'detail'],
   lokasi: ['lokasi', 'location'],
+  kode_aset: ['kodeaset', 'kodeunit', 'kodealat', 'kode', 'noaset', 'nounit', 'assetcode', 'codenumber', 'cn'],
   periode: ['periode', 'frekuensi'],
   start_date: ['startdate', 'tglmulai', 'mulai'],
   end_date: ['enddate', 'tglakhir', 'akhir'],
@@ -27,6 +28,7 @@ const COLS = {
 };
 const LABELS = {
   distrik: 'Distrik', dept: 'Dept', kategori: 'Kategori SPIP', jenis: 'Jenis', detail_jenis: 'Detail Jenis', lokasi: 'Lokasi',
+  kode_aset: 'Kode Aset',
   periode: 'Periode', start_date: 'Start Date', end_date: 'End Date', is_active: 'Is Active', is_plan: 'Is Plan',
   first_inspection: 'First Inspection', last_inspection: 'Last Inspection', has_finding: 'Ada Temuan', followed_up: 'Sudah Follow Up',
 };
@@ -113,7 +115,8 @@ function parseBook(buf, fileName) {
     }
     const kategori = resolveKategori(g('kategori'), jenis, detail);
     const distrik = txt(g('distrik'));
-    const key = [distrik, kategori, jenis, detail, lokasi].join('|').toLowerCase();
+    const kode = txt(g('kode_aset'));
+    const key = [distrik, kategori, jenis, detail, lokasi, ...(kode ? [kode] : [])].join('|').toLowerCase();
     const seq = (seen.get(key) || 0) + 1;
     seen.set(key, seq);
 
@@ -127,6 +130,7 @@ function parseBook(buf, fileName) {
       jenis,
       detail_jenis: detail,
       lokasi,
+      kode_aset: kode,
       periode: txt(g('periode')),
       start_date: toIso(g('start_date')),
       end_date: toIso(g('end_date')),
@@ -138,7 +142,7 @@ function parseBook(buf, fileName) {
       followed_up: hasFinding && idx.followed_up != null ? toBool(g('followed_up'), true, false) : false,
     });
   }
-  const missing = Object.keys(LABELS).filter((f) => idx[f] == null).map((f) => LABELS[f]);
+  const missing = Object.keys(LABELS).filter((f) => f !== 'kode_aset' && idx[f] == null).map((f) => LABELS[f]);
   const dup = rows.filter((r) => r.seq > 1).length;
   return { name: fileName, sheet: best.sn, rows, skipped, missing, dup };
 }
@@ -242,6 +246,7 @@ export default function ImportClient() {
                   <th className="l">Jenis</th>
                   <th className="l">Detail jenis</th>
                   <th className="l">Lokasi</th>
+                  <th className="l">Kode aset</th>
                   <th>Periode</th>
                   <th>Inspeksi terakhir</th>
                 </tr>
@@ -255,6 +260,7 @@ export default function ImportClient() {
                     <td className="l">{r.jenis}</td>
                     <td className="l">{r.detail_jenis}</td>
                     <td className="l">{r.lokasi}</td>
+                    <td className="l">{r.kode_aset || '–'}</td>
                     <td>{r.periode}</td>
                     <td>{r.last_inspection || '–'}</td>
                   </tr>

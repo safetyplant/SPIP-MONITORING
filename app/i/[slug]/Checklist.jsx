@@ -213,6 +213,7 @@ export default function Checklist({ asset, kat, tplKey, templates, history, find
               <em>{kat.short}</em>
             </span>
           </div>
+          {asset.kode ? <p className="ck-kode"><span>Kode aset</span><b>{asset.kode}</b></p> : null}
           <h1 className="ck-title">{asset.detail || asset.jenis}</h1>
           <p className="ck-loc"><IcPin /> {asset.lokasi || asset.distrik || 'Lokasi belum diisi'}</p>
 
@@ -248,7 +249,7 @@ export default function Checklist({ asset, kat, tplKey, templates, history, find
                 : 'Semua poin yang diperiksa sesuai.'}
             </p>
             <dl className="ck-summary">
-              <div><dt>Aset</dt><dd>{asset.detail || asset.jenis}</dd></div>
+              <div><dt>Aset</dt><dd>{asset.kode ? `${asset.kode} · ` : ''}{asset.detail || asset.jenis}</dd></div>
               <div><dt>Tanggal</dt><dd>{fmtDate(done.date)}</dd></div>
               <div><dt>Pemeriksa</dt><dd>{done.name} · NRP {done.nrp}</dd></div>
               <div><dt>Checklist</dt><dd>{tpl.name}</dd></div>
@@ -337,6 +338,7 @@ export default function Checklist({ asset, kat, tplKey, templates, history, find
                   <div className="ck-list-h">
                     <div>
                       <h2 className="ck-h2">{tpl.name}</h2>
+                      {tpl.ref ? <p className="ck-ref"><b>Dasar:</b> {tpl.ref}</p> : null}
                       <p className="muted small">{answered} dari {total} poin dijawab{temCount ? ` · ${temCount} temuan` : ''}</p>
                     </div>
                     <button type="button" className="ck-link" onClick={allOk}>Isi sisanya Sesuai</button>

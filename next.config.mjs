@@ -3,6 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   experimental: {
+    instrumentationHook: true,
     // Halaman admin selalu ambil data terbaru, tidak memakai cache navigasi di browser.
     staleTimes: { dynamic: 0, static: 0 },
   },

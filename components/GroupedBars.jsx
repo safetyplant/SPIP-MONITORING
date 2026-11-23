@@ -24,20 +24,20 @@ export function Legend() {
   );
 }
 
-// Grafik batang berkelompok murni HTML dan CSS (tanpa library). Tiap kelompok berisi lima batang.
+// Grafik batang 3D berkelompok, murni HTML dan CSS (tanpa library): batang tumbuh saat dimuat dan terangkat saat disorot.
 export default function GroupedBars({ groups, height = 230 }) {
   const max = Math.max(1, ...groups.flatMap((g) => g.values));
   if (!groups.length) return <p className="empty">Tidak ada data pada filter ini.</p>;
   return (
     <div className="gb-scroll">
       <div className="gb-row">
-        {groups.map((g) => (
+        {groups.map((g, gi) => (
           <div className="gb-group" key={g.key} title={g.label}>
             <div className="gb-plot" style={{ height }}>
               {g.values.map((v, i) => (
                 <div className="gb-bar" key={i} title={`${SERIES[i][0]}: ${fmt(v)}`}>
                   <span className="gb-val">{fmt(v)}</span>
-                  <i style={{ '--r': v / max, background: `var(${SERIES[i][1]})` }} />
+                  <i style={{ '--r': v / max, '--c': `var(${SERIES[i][1]})`, '--d': `${Math.min(gi, 12) * 70 + i * 90}ms` }} />
                 </div>
               ))}
             </div>

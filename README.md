@@ -52,6 +52,25 @@ git push -u origin main
 - **Admin** masuk di `/login` dengan kunci admin: `ADMIN_PASSWORD` (environment variable) atau kata sandi bawaan `kb17161`. Setelah login, admin bisa melihat dashboard, mengimpor Excel, menambah, mengubah, dan menghapus aset di menu Mapping.
 - **Selain admin** hanya bisa membuka link inspeksi `/i/<kode>` dan mengisi checklist. Halaman admin dan API admin selalu meminta login.
 
+## Kode aset / kode unit / kode alat
+
+- Isi lewat menu **Mapping** (Tambah aset / Edit) atau kolom **Kode Aset** di Excel (header `Kode Aset`, `Kode Unit`, atau `Kode Alat` juga dikenali).
+- Kode tampil di tabel Mapping, label QR, halaman checklist, menu Temuan, dan ekspor Excel. Kolom ini juga bisa dicari.
+- Kode ikut membentuk identitas aset, jadi beberapa aset sejenis di lokasi yang sama (mis. 5 APAR di workshop) bisa dibedakan dengan kode berbeda.
+- Database lama: kolom dibuat otomatis saat server mulai. Bila gagal, jalankan `db/migrations/002-kode-aset.sql` di SQL Editor Neon.
+
+## Bank checklist
+
+Daftar lengkap ada di menu **Checklist** (bisa diunduh ke Excel beserta dasar regulasinya). Template khusus yang ditambahkan:
+
+| Area | Template |
+|---|---|
+| TPS Limbah B3 | Kondisi fisik & fasilitas; Dokumen, pencatatan & kepatuhan |
+| Pit stop | Area pengisian BBM & servis lapangan |
+| Workshop | Kondisi area, K3 & housekeeping; Penyimpanan oli, B3, drum & tabung gas; Dokumen & kepatuhan SMKP |
+
+Dasar acuan yang dipakai: UU 1/1970, PP 22/2021, Permen LHK 6/2021, Permen ESDM 26/2018, Kepmen ESDM 1827.K/30/MEM/2018, Kepdirjen Minerba 185.K/37.04/DJB/2019 (SMKP), serta Permenaker 4/1980, 8/2010, 12/2015, 15/2008, 5/2018, 37/2016, 8/2020. Poin pemeriksaan adalah draf: cocokkan dengan izin lingkungan, persetujuan teknis, SOP/IBPR perusahaan, dan regulasi terbaru, lalu ubah di `lib/checklists.js` bila perlu.
+
 ## Logo
 
 Logo KPP Mining, CISS, dan ASTO ada di `public/logos` (kpp.png, ciss.png, asto.png). Ganti file itu untuk mengubah logo.

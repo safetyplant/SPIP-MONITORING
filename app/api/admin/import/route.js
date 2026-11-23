@@ -17,15 +17,15 @@ const BATCH_RE = /^[0-9a-f-]{36}$/;
 const NEWER = '(EXCLUDED.last_inspection IS NOT NULL AND (assets.last_inspection IS NULL OR EXCLUDED.last_inspection >= assets.last_inspection))';
 
 const UPSERT = `
-INSERT INTO assets (key_hash, distrik, dept, kategori, jenis, detail_jenis, lokasi, periode,
+INSERT INTO assets (key_hash, distrik, dept, kategori, jenis, detail_jenis, lokasi, kode_aset, periode,
                     start_date, end_date, is_active, is_plan, first_inspection, last_inspection,
                     has_finding, followed_up, import_batch)
-SELECT x.key_hash, x.distrik, x.dept, x.kategori, x.jenis, x.detail_jenis, x.lokasi, x.periode,
+SELECT x.key_hash, x.distrik, x.dept, x.kategori, x.jenis, x.detail_jenis, x.lokasi, COALESCE(x.kode_aset, ''), x.periode,
        NULLIF(x.start_date, '')::date, NULLIF(x.end_date, '')::date, x.is_active, x.is_plan,
        NULLIF(x.first_inspection, '')::date, NULLIF(x.last_inspection, '')::date,
        x.has_finding, x.followed_up, $2::text
   FROM jsonb_to_recordset($1::jsonb) AS x(
-       key_hash text, distrik text, dept text, kategori text, jenis text, detail_jenis text, lokasi text,
+       key_hash text, distrik text, dept text, kategori text, jenis text, detail_jenis text, lokasi text, kode_aset text,
        periode text, start_date text, end_date text, is_active boolean, is_plan boolean,
        first_inspection text, last_inspection text, has_finding boolean, followed_up boolean)
 ON CONFLICT (key_hash) DO UPDATE SET
@@ -34,6 +34,7 @@ ON CONFLICT (key_hash) DO UPDATE SET
   jenis = EXCLUDED.jenis,
   detail_jenis = EXCLUDED.detail_jenis,
   lokasi = EXCLUDED.lokasi,
+  kode_aset = EXCLUDED.kode_aset,
   periode = EXCLUDED.periode,
   start_date = EXCLUDED.start_date,
   end_date = EXCLUDED.end_date,
@@ -71,6 +72,7 @@ export async function POST(req) {
         jenis: str(raw.jenis),
         detail_jenis: str(raw.detail_jenis),
         lokasi: str(raw.lokasi),
+        kode_aset: str(raw.kode_aset, 60),
         periode: str(raw.periode, 40),
       };
       if (!r.jenis && !r.detail_jenis && !r.lokasi) continue;
