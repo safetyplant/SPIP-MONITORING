@@ -34,7 +34,6 @@ git push -u origin main
 |---|---|
 | `DATABASE_URL` | connection string Neon |
 | `ADMIN_PASSWORD` | password login admin |
-| `EDIT_PASSWORD` | opsional, kata sandi edit data. Bila kosong, memakai bawaan `kb17161` |
 | `SESSION_SECRET` | teks acak panjang (opsional, bawaannya memakai ADMIN_PASSWORD) |
 | `APP_URL` | opsional, mis. `https://spip.perusahaan.com` agar link dan QR memakai domain tetap |
 
@@ -48,9 +47,10 @@ git push -u origin main
 4. Dashboard otomatis menghitung achievement. Temuan ditindaklanjuti lewat link yang sama atau menu Temuan.
 5. **Data & Excel** juga bisa mengunduh data aset beserta link, dan riwayat inspeksi lengkap dengan NRP.
 
-## Edit data langsung
+## Akses dan edit data
 
-Di menu **Mapping Detail Jenis & Lokasi**, klik **Buka kunci** lalu masukkan `EDIT_PASSWORD`. Setelah terbuka (berlaku 2 jam) muncul tombol **Tambah aset** dan **Edit** di tiap baris, termasuk hapus aset. Tanpa kata sandi itu, data hanya bisa dilihat. Kata sandi edit bawaan adalah `kb17161`. Untuk mengganti, isi `EDIT_PASSWORD` di Environment Variables hosting.
+- **Admin** masuk di `/login` dengan kunci admin: `ADMIN_PASSWORD` (environment variable) atau kata sandi bawaan `kb17161`. Setelah login, admin bisa melihat dashboard, mengimpor Excel, menambah, mengubah, dan menghapus aset di menu Mapping.
+- **Selain admin** hanya bisa membuka link inspeksi `/i/<kode>` dan mengisi checklist. Halaman admin dan API admin selalu meminta login.
 
 ## Logo
 
