@@ -69,7 +69,7 @@ export default async function Page({ searchParams }) {
         <FilterForm f={f} options={options} action="/admin/qr" period={false}>
           <label className="field">
             <span>Cari</span>
-            <input type="search" name="q" defaultValue={q} placeholder="kode aset, jenis, detail, lokasi…" />
+            <input type="search" name="q" defaultValue={q} placeholder="kode unit, jenis, detail, lokasi…" />
           </label>
         </FilterForm>
       </div>

@@ -5,7 +5,7 @@ import KatBadge from '@/components/KatBadge';
 import CopyButton from '@/components/CopyButton';
 import { db } from '@/lib/db';
 import { filterOptions } from '@/lib/stats';
-import { fmtDate } from '@/lib/format';
+import { fmtDate, jakartaToday, monthStart } from '@/lib/format';
 import { baseUrl } from '@/lib/url';
 import { qs } from '@/lib/qs';
 
@@ -17,9 +17,18 @@ export const metadata = { title: 'Mapping' };
 const PAGE = 50;
 const one = (v) => (Array.isArray(v) ? v[0] : v) || '';
 
-function Status({ r }) {
-  if (!r.last_inspection) return <span className="pill bad">Belum</span>;
-  if (r.has_finding && !r.followed_up) return <span className="pill warn">Temuan</span>;
+// Status mengikuti bulan berjalan: inspeksi bulan lalu tidak dihitung, jadi unit kembali "Belum" tiap awal bulan.
+function Status({ r, ms }) {
+  const open = r.has_finding && !r.followed_up;
+  if (!r.last_inspection || r.last_inspection < ms) {
+    return (
+      <span className="stack-sm">
+        <span className="pill bad">Belum</span>
+        {r.last_inspection && open ? <span className="pill warn" title="Temuan inspeksi sebelumnya belum ditindaklanjuti">Temuan terbuka</span> : null}
+      </span>
+    );
+  }
+  if (open) return <span className="pill warn">Temuan</span>;
   return <span className="pill ok">Sudah</span>;
 }
 
@@ -46,8 +55,11 @@ export default async function Page({ searchParams }) {
   if (act === '0') conds.push('NOT a.is_active');
   if (plan === '1') conds.push('a.is_plan');
   if (plan === '0') conds.push('NOT a.is_plan');
-  if (insp === 'belum') conds.push('a.last_inspection IS NULL');
-  if (insp === 'sudah') conds.push('a.last_inspection IS NOT NULL');
+  const ms = monthStart(jakartaToday());
+  if (insp === 'belum') add('(a.last_inspection IS NULL OR a.last_inspection < ?::date)', ms);
+  if (insp === 'sudah') add('a.last_inspection >= ?::date', ms);
+  if (insp === 'pernah') conds.push('a.last_inspection IS NOT NULL');
+  if (insp === 'never') conds.push('a.last_inspection IS NULL');
   if (insp === 'temuan') conds.push('(a.has_finding AND NOT a.followed_up)');
   q.toLowerCase()
     .split(/\s+/)
@@ -80,7 +92,7 @@ export default async function Page({ searchParams }) {
     <>
       <div className="page-h">
         <h1>Mapping Detail Jenis &amp; Lokasi</h1>
-        <p className="muted">{total.toLocaleString('id-ID')} aset. Setiap aset punya link checklist sendiri.</p>
+        <p className="muted">{total.toLocaleString('id-ID')} aset. Status dihitung per bulan berjalan: unit yang belum diinspeksi bulan ini berstatus Belum.</p>
       </div>
 
       <EditBar options={options} />
@@ -88,7 +100,7 @@ export default async function Page({ searchParams }) {
       <FilterForm f={f} options={options} action="/admin/mapping" period={false}>
         <label className="field">
           <span>Cari</span>
-          <input type="search" name="q" defaultValue={q} placeholder="kode aset, jenis, detail, lokasi…" />
+          <input type="search" name="q" defaultValue={q} placeholder="kode unit, jenis, detail, lokasi…" />
         </label>
         <label className="field">
           <span>Aktif</span>
@@ -110,8 +122,10 @@ export default async function Page({ searchParams }) {
           <span>Inspeksi</span>
           <select name="insp" defaultValue={insp}>
             <option value="">Semua</option>
-            <option value="belum">Belum pernah</option>
-            <option value="sudah">Sudah pernah</option>
+            <option value="belum">Belum bulan ini</option>
+            <option value="sudah">Sudah bulan ini</option>
+            <option value="pernah">Pernah diinspeksi</option>
+            <option value="never">Belum pernah sama sekali</option>
             <option value="temuan">Temuan belum follow up</option>
           </select>
         </label>
@@ -121,7 +135,7 @@ export default async function Page({ searchParams }) {
         <table>
           <thead>
             <tr>
-              <th className="l">Kode aset</th>
+              <th className="l">Kode unit</th>
               <th className="l">Kategori</th>
               <th className="l">Distrik</th>
               <th className="l">Dept</th>
@@ -130,7 +144,7 @@ export default async function Page({ searchParams }) {
               <th className="l">Lokasi</th>
               <th className="l">Periode</th>
               <th>Inspeksi terakhir</th>
-              <th>Status</th>
+              <th>Status bulan ini</th>
               <th>Link checklist</th>
               {canEdit && <th>Edit</th>}
             </tr>
@@ -147,10 +161,11 @@ export default async function Page({ searchParams }) {
                 <td className="l">{r.lokasi}</td>
                 <td className="l">{r.periode}</td>
                 <td>{fmtDate(r.last_inspection)}</td>
-                <td><Status r={r} /></td>
+                <td><Status r={r} ms={ms} /></td>
                 <td className="nowrap">
                   <Link className="btn sm primary" href={`/i/${r.slug}`} target="_blank">Isi checklist</Link>{' '}
-                  <CopyButton text={`${base}/i/${r.slug}`} label="Salin" />
+                  <CopyButton text={`${base}/i/${r.slug}`} label="Salin" />{' '}
+                  <Link className="btn sm" href={`/admin/riwayat/${r.slug}`}>Riwayat</Link>
                 </td>
                 {canEdit && (
                   <td className="nowrap">

@@ -15,7 +15,7 @@ const COLS = {
   jenis: ['jenis'],
   detail_jenis: ['detailjenis', 'detail'],
   lokasi: ['lokasi', 'location'],
-  kode_aset: ['kodeaset', 'kodeunit', 'kodealat', 'kode', 'noaset', 'nounit', 'assetcode', 'codenumber', 'cn'],
+  kode_aset: ['kodeunit', 'kodeaset', 'kodealat', 'kode', 'noaset', 'nounit', 'assetcode', 'codenumber', 'cn'],
   periode: ['periode', 'frekuensi'],
   start_date: ['startdate', 'tglmulai', 'mulai'],
   end_date: ['enddate', 'tglakhir', 'akhir'],
@@ -28,7 +28,7 @@ const COLS = {
 };
 const LABELS = {
   distrik: 'Distrik', dept: 'Dept', kategori: 'Kategori SPIP', jenis: 'Jenis', detail_jenis: 'Detail Jenis', lokasi: 'Lokasi',
-  kode_aset: 'Kode Aset',
+  kode_aset: 'Kode Unit',
   periode: 'Periode', start_date: 'Start Date', end_date: 'End Date', is_active: 'Is Active', is_plan: 'Is Plan',
   first_inspection: 'First Inspection', last_inspection: 'Last Inspection', has_finding: 'Ada Temuan', followed_up: 'Sudah Follow Up',
 };
@@ -246,7 +246,7 @@ export default function ImportClient() {
                   <th className="l">Jenis</th>
                   <th className="l">Detail jenis</th>
                   <th className="l">Lokasi</th>
-                  <th className="l">Kode aset</th>
+                  <th className="l">Kode unit</th>
                   <th>Periode</th>
                   <th>Inspeksi terakhir</th>
                 </tr>

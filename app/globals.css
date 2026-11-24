@@ -512,3 +512,66 @@ tr.lv0 td { background: color-mix(in srgb, var(--lime) 18%, var(--surface)); }
 .logos { box-shadow: 0 0 0 2px rgba(183, 255, 26, 0.7); }
 .lockbar.open { background: color-mix(in srgb, var(--lime) 22%, var(--surface)); border-color: var(--lime-2); }
 .btn.sm.logout { border-color: var(--lime); }
+
+/* ---------- periode cepat, status bulanan, riwayat ---------- */
+.presets { gap: 6px; margin-left: 4px; }
+.chip { display: inline-block; padding: 5px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); text-decoration: none; font-size: 13px; font-weight: 600; }
+.chip:hover { background: color-mix(in srgb, var(--lime) 30%, var(--surface)); }
+.chip.on { background: var(--lime); color: var(--teal-deep); border-color: var(--lime-2); box-shadow: 0 0 10px rgba(183, 255, 26, 0.55); }
+.stack-sm { display: inline-flex; flex-direction: column; gap: 3px; align-items: flex-end; }
+.ck-status.is-done { background: var(--lime); color: var(--teal-deep); font-weight: 700; }
+.ck-status.is-todo { background: rgba(255, 90, 110, 0.28); }
+.ck-months { list-style: none; margin: 0 0 10px; padding: 0; display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+.ck-months li { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 2px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); font-size: 11px; color: var(--muted); }
+.ck-months li b { font-size: 16px; line-height: 1; }
+.ck-months .m-ok { background: color-mix(in srgb, var(--lime) 40%, var(--surface)); color: #1e5a00; border-color: var(--lime-2); }
+.ck-months .m-tem { background: var(--warn-bg); color: var(--warn); border-color: var(--c-tem); }
+.ck-months .m-no { background: var(--danger-bg); color: var(--danger); }
+.ck-months .m-fut { opacity: 0.55; }
+@media (min-width: 560px) { .ck-months { grid-template-columns: repeat(12, 1fr); } }
+.rw-table th.c, .rw-table td.c { text-align: center; padding-inline: 4px; }
+.rw-cell { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 8px; font-size: 13px; font-weight: 800; background: var(--surface-2); color: var(--muted); }
+.rw-cell.ok { background: color-mix(in srgb, var(--lime) 45%, var(--surface)); color: #1e5a00; box-shadow: inset 0 0 0 1px var(--lime-2); }
+.rw-cell.tem { background: var(--warn-bg); color: var(--warn); box-shadow: inset 0 0 0 1px var(--c-tem); }
+.rw-cell.no { background: var(--danger-bg); color: var(--danger); }
+.rw-cell.fut { opacity: 0.5; }
+.rw-legend { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+.rw-legend .rw-cell { width: 22px; height: 22px; font-size: 12px; }
+.rw-item { padding: 10px 14px; margin-bottom: 0; }
+.rw-item > summary { cursor: pointer; display: flex; gap: 8px 12px; align-items: center; flex-wrap: wrap; }
+.rw-items { list-style: none; padding: 0; margin: 12px 0 0; display: grid; gap: 6px; }
+.rw-items li { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; }
+.rw-items li .pill { flex: none; min-width: 58px; text-align: center; }
+.rw-items li em { display: block; font-style: normal; color: var(--warn); font-size: 13px; }
+
+/* ---------- grafik muat semua layar, blok per kategori ---------- */
+.gb-scroll { overflow: visible; padding-bottom: 6px; }
+.gb-row { width: 100%; min-width: 0; }
+.gb-group { flex: 1 1 0; min-width: 0; }
+.gb-label { padding: 6px 2px 4px; }
+.gb-row .gb-plot { gap: 8px; }
+.gb-row.dense .gb-plot { --depth: 4px; gap: 2px; padding: 0 calc(var(--depth) + 3px) 0 3px; }
+.gb-row.dense .gb-bar { min-width: 2px; }
+.gb-row.dense .gb-val { display: none; }
+.gb-row.dense .gb-bar:hover .gb-val { display: block; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%) rotate(0); writing-mode: horizontal-tb; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 1px 5px; z-index: 5; box-shadow: var(--shadow); }
+.gb-row.dense .gb-label { writing-mode: vertical-rl; height: var(--lh, 100px); min-height: 0; text-align: start; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10.5px; padding: 6px 0; margin: 0 auto; }
+
+.cat-block { --kc: var(--k-none); margin-bottom: 18px; border-left: 6px solid var(--kc); padding-left: 12px; border-radius: 4px; }
+.cat-block.kat-sarana, .cat-card.kat-sarana, .tile-kat.kat-sarana { --kc: var(--k-sarana); }
+.cat-block.kat-prasarana, .cat-card.kat-prasarana, .tile-kat.kat-prasarana { --kc: var(--k-prasarana); }
+.cat-block.kat-instalasi, .cat-card.kat-instalasi, .tile-kat.kat-instalasi { --kc: var(--k-instalasi); }
+.cat-block.kat-peralatan, .cat-card.kat-peralatan, .tile-kat.kat-peralatan { --kc: var(--k-peralatan); }
+.cat-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.cat-head h2 { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0; font-size: 19px; }
+.cat-head h2 small { font-family: var(--font-body); font-weight: 500; font-size: 13px; }
+.cat-ach { display: flex; align-items: baseline; gap: 10px; }
+.cat-ach b { font-family: var(--font-head); font-size: 24px; }
+.cat-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 12px; }
+.cat-grid.wide { grid-template-columns: minmax(0, 1fr); }
+.cat-grid .tb-panel { margin-bottom: 0; }
+@media (max-width: 900px) { .cat-grid { grid-template-columns: minmax(0, 1fr); } }
+.cat-card { border-top: 4px solid var(--kc); border-left: 6px solid var(--kc); }
+.tile-kat { --tc: var(--kc); text-decoration: none; color: inherit; display: block; }
+.tile-kat:hover { box-shadow: 0 0 0 3px color-mix(in srgb, var(--lime) 60%, transparent); }
+.tile-total { --tc: var(--lime-2); }
+.tile .ach { font-family: var(--font-head); }

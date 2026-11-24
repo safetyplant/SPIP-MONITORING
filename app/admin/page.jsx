@@ -14,8 +14,6 @@ export const fetchCache = 'force-no-store';
 export const revalidate = 0;
 export const metadata = { title: 'Dashboard Summary SPIP' };
 
-const MAX_DETAIL = 40;
-
 function StatRow({ s, children, href }) {
   return (
     <tr>
@@ -92,15 +90,24 @@ export default async function Page({ searchParams }) {
   const base = { d: f.d, p: f.p, k: f.k, de: f.de, pr: f.pr, l: f.l, start: f.start, end: f.end };
 
   const katGroups = [...byKat]
-    .sort((a, b) => b.plan - a.plan)
+    .sort((x, y) => KATEGORI_ORDER.indexOf(x.kategori) - KATEGORI_ORDER.indexOf(y.kategori))
     .map((r) => ({ key: r.kategori, label: r.kategori || '(tanpa kategori)', values: valuesOf(r) }));
   katGroups.push({ key: '__total', label: 'Grand Total', values: valuesOf(total) });
 
-  const jenisRows = [...byJenis].sort((a, b) => b.plan - a.plan);
-  const jenisGroups = jenisRows.map((r) => ({ key: `${r.kategori}|${r.jenis}`, label: r.jenis || '(tanpa jenis)', values: valuesOf(r) }));
+  const jenisRows = [...byJenis].sort((x, y) => y.plan - x.plan);
+  const detailAll = [...byDetail].filter((r) => !f.j || r.jenis === f.j).sort((x, y) => y.plan - x.plan);
 
-  const detailAll = [...byDetail].filter((r) => !f.j || r.jenis === f.j).sort((a, b) => b.plan - a.plan);
-  const detailGroups = detailAll.slice(0, MAX_DETAIL).map((r) => ({ key: `${r.kategori}|${r.jenis}|${r.detail}`, label: r.detail || '(tanpa detail)', values: valuesOf(r) }));
+  // Jenis dan detail jenis dipisah per kategori, supaya tiap grafik cukup lebar dan seluruh batang terlihat.
+  const perKat = KATEGORI_ORDER.map((k) => {
+    const jr = jenisRows.filter((r) => r.kategori === k);
+    const dr = detailAll.filter((r) => r.kategori === k);
+    return {
+      k,
+      sum: byKat.find((r) => r.kategori === k),
+      jenis: jr.map((r) => ({ key: `${r.kategori}|${r.jenis}`, label: r.jenis || '(tanpa jenis)', values: valuesOf(r) })),
+      detail: dr.map((r) => ({ key: `${r.kategori}|${r.jenis}|${r.detail}`, label: r.detail || r.jenis || '(tanpa detail)', values: valuesOf(r) })),
+    };
+  }).filter((x) => x.jenis.length || x.detail.length);
 
   return (
     <>
@@ -111,22 +118,32 @@ export default async function Page({ searchParams }) {
 
       <FilterForm f={f} options={options} action="/admin" full lastRefresh={meta[0].refreshed} />
 
-      <div className="tb-top">
-        <Panel title="Implementasi Kategori SPIP">
-          <GroupedBars groups={katGroups} />
-        </Panel>
-        <Panel title="Implementasi Jenis SPIP">
-          <GroupedBars groups={jenisGroups} />
-        </Panel>
-      </div>
-
-      <Panel title="Implementasi Detail Jenis SPIP">
-        <GroupedBars groups={detailGroups} />
-        {detailAll.length > MAX_DETAIL && (
-          <p className="muted small tb-note">Menampilkan {MAX_DETAIL} detail jenis dengan plan terbanyak dari {detailAll.length}. Persempit dengan filter Jenis atau Detail Jenis.</p>
-        )}
+      <Panel title="Implementasi Kategori SPIP">
+        <GroupedBars groups={katGroups} />
       </Panel>
       <Legend />
+
+      {perKat.map(({ k, sum, jenis, detail }) => (
+        <section key={k} className={`cat-block kat-${KATEGORI[k].key}`}>
+          <header className="cat-head">
+            <h2><KatBadge kategori={k} /> <span>{KATEGORI[k].label}</span> <small className="muted">{KATEGORI[k].short}</small></h2>
+            {sum ? (
+              <div className="cat-ach">
+                <b className={`ach ${achClass(sum.ach)}`}>{pct(sum.ach)}</b>
+                <span className="muted small">{fmt(sum.sudah)} dari {fmt(sum.plan)} plan</span>
+              </div>
+            ) : null}
+          </header>
+          <div className={`cat-grid${detail.length > 9 ? ' wide' : ''}`}>
+            <Panel title={`Implementasi Jenis SPIP · ${k}`}>
+              <GroupedBars groups={jenis} />
+            </Panel>
+            <Panel title={`Implementasi Detail Jenis SPIP · ${k}`}>
+              <GroupedBars groups={detail} />
+            </Panel>
+          </div>
+        </section>
+      ))}
 
       <section className="kat-defs" aria-label="Keterangan kategori SPIP">
         {KATEGORI_ORDER.map((k) => (

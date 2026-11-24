@@ -1,7 +1,8 @@
 import FilterForm from '@/components/FilterForm';
 import KatBadge from '@/components/KatBadge';
-import { parseFilters, statsBy, filterOptions, sumRows, byKategoriOrder } from '@/lib/stats';
-import { fmt, pct, achClass } from '@/lib/format';
+import { parseFilters, statsBy, filterOptions, sumRows } from '@/lib/stats';
+import { fmt, pct, achClass, fmtDate } from '@/lib/format';
+import { KATEGORI, KATEGORI_ORDER } from '@/lib/spip';
 
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
@@ -34,37 +35,54 @@ function group(rows, key) {
   return Array.from(m.entries()).sort((a, b) => a[0].localeCompare(b[0], 'id'));
 }
 
-function Table({ rows, topKey, withJenis, grand }) {
+function Head({ first }) {
+  return (
+    <thead>
+      <tr>
+        <th className="l">{first}</th>
+        <th>Jumlah plan</th>
+        <th>Belum inspeksi</th>
+        <th>Tidak ada temuan</th>
+        <th>Temuan belum follow up</th>
+        <th>Temuan sudah follow up</th>
+        <th>ACH inspeksi</th>
+      </tr>
+    </thead>
+  );
+}
+
+// Tabel satu kelompok: Distrik > Jenis > Detail jenis.
+function KatTable({ rows, total }) {
   const out = [];
-  group(rows, topKey).forEach(([top, list]) => {
-    out.push(<Row key={`t-${top}`} label={top} s={sumRows(list)} level={0} />);
-    const kats = group(list, 'kategori').sort((a, b) => byKategoriOrder(a[0], b[0]));
-    kats.forEach(([kat, kl]) => {
-      out.push(<Row key={`k-${top}-${kat}`} label="" kategori={kat} s={sumRows(kl)} level={1} />);
-      if (withJenis) {
-        group(kl, 'jenis').forEach(([j, jl]) => {
-          out.push(<Row key={`j-${top}-${kat}-${j}`} label={j} s={sumRows(jl)} level={2} />);
-        });
-      }
+  group(rows, 'distrik').forEach(([dis, dl]) => {
+    out.push(<Row key={`d-${dis}`} label={dis} s={sumRows(dl)} level={0} />);
+    group(dl, 'jenis').forEach(([j, jl]) => {
+      out.push(<Row key={`j-${dis}-${j}`} label={j} s={sumRows(jl)} level={1} />);
+      jl.filter((r) => r.detail).forEach((r) => {
+        out.push(<Row key={`e-${dis}-${j}-${r.detail}`} label={r.detail} s={r} level={2} />);
+      });
     });
   });
   return (
     <div className="tscroll">
       <table>
-        <thead>
-          <tr>
-            <th className="l">Item</th>
-            <th>Jumlah plan</th>
-            <th>Belum inspeksi</th>
-            <th>Tidak ada temuan</th>
-            <th>Temuan belum follow up</th>
-            <th>Temuan sudah follow up</th>
-            <th>ACH inspeksi</th>
-          </tr>
-        </thead>
+        <Head first="Distrik / Jenis / Detail jenis" />
         <tbody>
           {out}
-          <Row key="grand" label="Total" s={grand} level={3} />
+          <Row key="total" label="Total" s={total} level={3} />
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function DeptTable({ rows }) {
+  return (
+    <div className="tscroll">
+      <table>
+        <Head first="Dept" />
+        <tbody>
+          {rows.map((r) => <Row key={r.dept} label={r.dept || '(kosong)'} s={r} level={0} />)}
         </tbody>
       </table>
     </div>
@@ -73,28 +91,72 @@ function Table({ rows, topKey, withJenis, grand }) {
 
 export default async function Page({ searchParams }) {
   const f = parseFilters(searchParams);
-  const [options, perDistrik, perDept] = await Promise.all([
+  const [options, detail, perDept] = await Promise.all([
     filterOptions(),
-    statsBy(f, ['distrik', 'kategori', 'jenis']),
-    statsBy(f, ['dept', 'kategori']),
+    statsBy(f, ['kategori', 'distrik', 'jenis', 'detail']),
+    statsBy(f, ['kategori', 'dept']),
   ]);
-  const grand = sumRows(perDistrik);
+  // Satu baris per detail; jumlahkan ke jenis, distrik, dan kategori di sisi server.
+  const grand = sumRows(detail);
+  const byKat = (k, rows) => rows.filter((r) => r.kategori === k);
+  const kats = KATEGORI_ORDER.map((k) => ({ k, rows: byKat(k, detail), dept: byKat(k, perDept) }));
 
   return (
     <>
       <div className="page-h">
         <h1>Achievement inspeksi</h1>
-        <p className="muted">ACH inspeksi = sudah inspeksi dibagi jumlah plan pada periode yang dipilih.</p>
+        <p className="muted">
+          ACH inspeksi = sudah inspeksi dibagi jumlah plan pada periode yang dipilih ({fmtDate(f.start)} s/d {fmtDate(f.end)}).
+          Inspeksi bulan lalu tidak dihitung pada bulan berjalan.
+        </p>
       </div>
       <FilterForm f={f} options={options} action="/admin/achievement" />
-      <section className="card">
-        <h2>Per distrik, kategori, dan jenis</h2>
-        <Table rows={perDistrik} topKey="distrik" withJenis grand={grand} />
+
+      <section className="kpis" aria-label="Ringkasan ACH per kelompok">
+        {kats.map(({ k, rows }) => {
+          const s = sumRows(rows);
+          return (
+            <a key={k} href={`#kat-${KATEGORI[k].key}`} className={`tile tile-kat kat-${KATEGORI[k].key}`}>
+              <div className="tile-l">{k}</div>
+              <div className={`tile-v ach ${achClass(s.ach)}`}>{pct(s.ach)}</div>
+              <div className="tile-s">{fmt(s.sudah)} dari {fmt(s.plan)} plan</div>
+            </a>
+          );
+        })}
+        <div className="tile tile-total">
+          <div className="tile-l">Total</div>
+          <div className={`tile-v ach ${achClass(grand.ach)}`}>{pct(grand.ach)}</div>
+          <div className="tile-s">{fmt(grand.sudah)} dari {fmt(grand.plan)} plan</div>
+        </div>
       </section>
-      <section className="card">
-        <h2>Per dept dan kategori</h2>
-        <Table rows={perDept} topKey="dept" grand={sumRows(perDept)} />
-      </section>
+
+      {kats.map(({ k, rows, dept }) => {
+        const s = sumRows(rows);
+        return (
+          <section key={k} id={`kat-${KATEGORI[k].key}`} className={`card cat-card kat-${KATEGORI[k].key}`}>
+            <div className="cat-head">
+              <div>
+                <h2><KatBadge kategori={k} /> <span>{KATEGORI[k].label}</span></h2>
+                <p className="muted small">{KATEGORI[k].short}</p>
+              </div>
+              <div className="cat-ach">
+                <b className={`ach ${achClass(s.ach)}`}>{pct(s.ach)}</b>
+                <span className="muted small">{fmt(s.sudah)} dari {fmt(s.plan)} plan</span>
+              </div>
+            </div>
+            {rows.length ? (
+              <>
+                <h3 className="mt">Per distrik, jenis, dan detail jenis</h3>
+                <KatTable rows={rows} total={s} />
+                <h3 className="mt">Per dept</h3>
+                <DeptTable rows={dept} />
+              </>
+            ) : (
+              <p className="muted">Tidak ada plan {k} pada filter ini.</p>
+            )}
+          </section>
+        );
+      })}
       <p className="muted small">Hijau 100% atau lebih, kuning 80% atau lebih, merah di bawah 80%.</p>
     </>
   );

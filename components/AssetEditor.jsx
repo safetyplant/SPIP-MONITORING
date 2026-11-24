@@ -73,8 +73,8 @@ function Form({ asset, options, onClose }) {
         )}
         <div className="form-grid">
           <label className="field wide">
-            <span>Kode aset / kode unit / kode alat</span>
-            <input value={v.kode_aset} onChange={set('kode_aset')} maxLength={60} placeholder="mis. DT0001, PNL-WS-01, APAR-WS-03" autoComplete="off" />
+            <span>Kode unit</span>
+            <input value={v.kode_aset} onChange={set('kode_aset')} maxLength={60} placeholder="kode unit / kode alat, mis. DT0001, CT0053, TB505" autoComplete="off" />
           </label>
           <label className="field">
             <span>Kategori SPIP</span>

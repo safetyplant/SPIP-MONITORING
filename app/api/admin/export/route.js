@@ -9,7 +9,7 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
-const HEAD = ['No.', 'Distrik', 'Dept', 'Kategori SPIP', 'Jenis', 'Detail Jenis', 'Lokasi', 'Kode Aset', 'Periode', 'Start Date', 'End Date', 'Is Active', 'Is Plan', 'First Inspection', 'Last Inspection', 'Ada Temuan', 'Sudah Follow Up', 'Link Checklist'];
+const HEAD = ['No.', 'Distrik', 'Dept', 'Kategori SPIP', 'Jenis', 'Detail Jenis', 'Lokasi', 'Kode Unit', 'Periode', 'Start Date', 'End Date', 'Is Active', 'Is Plan', 'First Inspection', 'Last Inspection', 'Ada Temuan', 'Sudah Follow Up', 'Link Checklist'];
 
 function sheet(aoa, widths) {
   const ws = XLSX.utils.aoa_to_sheet(aoa);
@@ -50,7 +50,7 @@ export async function GET(req) {
       ['Jenis', 'Jenis SPIP (mis. Alat Berat, Instalasi Listrik)', 'Ya'],
       ['Detail Jenis', 'Item spesifik (mis. Dump Truck, Panel Listrik, Shackle)', 'Ya'],
       ['Lokasi', 'Lokasi aset', 'Ya'],
-      ['Kode Aset', 'Kode aset / kode unit / kode alat (mis. DT0001, PNL-WS-01). Dipakai juga sebagai pembeda bila ada beberapa aset sejenis di lokasi yang sama', 'Disarankan'],
+      ['Kode Unit', 'Kode unit / kode alat (mis. DT0001, CT0053, TB505). Dipakai juga sebagai pembeda bila ada beberapa aset sejenis di lokasi yang sama', 'Disarankan'],
       ['Periode', 'Weekly, Monthly, Every 3 Months, Every 6 Months, Yearly', 'Disarankan'],
       ['Start Date / End Date', 'Masa berlaku plan, format dd/mm/yyyy', 'Disarankan'],
       ['Is Active', 'ACTIVE atau NOT ACTIVE', 'Opsional (bawaan aktif)'],
@@ -98,7 +98,7 @@ export async function GET(req) {
         FROM inspections i JOIN assets a ON a.id = i.asset_id
        ORDER BY i.inspected_on, i.id LIMIT 30000`;
     const lab = { ok: 'Sesuai', tem: 'Temuan', na: 'N/A' };
-    const aoa = [['Tanggal', 'NRP', 'Pemeriksa', 'Distrik', 'Dept', 'Kategori', 'Jenis', 'Detail Jenis', 'Lokasi', 'Kode Aset', 'Aksi', 'Hasil', 'Poin pemeriksaan', 'Jawaban', 'Catatan']];
+    const aoa = [['Tanggal', 'NRP', 'Pemeriksa', 'Distrik', 'Dept', 'Kategori', 'Jenis', 'Detail Jenis', 'Lokasi', 'Kode Unit', 'Aksi', 'Hasil', 'Poin pemeriksaan', 'Jawaban', 'Catatan']];
     rows.forEach((r) => {
       const common = [fmtDate(r.d), r.nrp, r.inspector_name, r.distrik, r.dept, r.kategori, r.jenis, r.detail_jenis, r.lokasi, r.kode_aset];
       if (r.kind === 'followup') {

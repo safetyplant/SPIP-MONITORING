@@ -1,3 +1,6 @@
+import { jakartaToday, monthStart, monthEnd, prevMonth } from '@/lib/format';
+import { qs } from '@/lib/qs';
+
 // Form filter berbasis GET, dirender di server (tanpa JavaScript di browser).
 function Select({ name, label, value, options }) {
   return (
@@ -17,6 +20,13 @@ function Select({ name, label, value, options }) {
 
 // `full` menambah filter Detail Jenis, Periode, dan Lokasi seperti pada dashboard Tableau.
 export default function FilterForm({ f, options, action, period = true, full = false, lastRefresh, children }) {
+  const today = jakartaToday();
+  const keep = { d: f.d, p: f.p, k: f.k, j: f.j, de: f.de, pr: f.pr, l: f.l };
+  const presets = [
+    ['Bulan ini', { start: monthStart(today), end: today }],
+    ['Bulan lalu', (() => { const m = prevMonth(today); return { start: m.start, end: m.end }; })()],
+    ['Tahun ini', { start: `${today.slice(0, 4)}-01-01`, end: today }],
+  ];
   return (
     <form className={`card filters${full ? ' tb' : ''}`} method="get" action={action}>
       <div className="filter-grid">
@@ -55,6 +65,13 @@ export default function FilterForm({ f, options, action, period = true, full = f
         <a className="btn ghost" href={action}>
           Atur ulang
         </a>
+        {period && (
+          <span className="row presets noprint" aria-label="Periode cepat">
+            {presets.map(([label, r]) => (
+              <a key={label} className={`chip${f.start === r.start && f.end === r.end ? ' on' : ''}`} href={`${action}${qs({ ...keep, ...r })}`}>{label}</a>
+            ))}
+          </span>
+        )}
         {lastRefresh ? <span className="muted small tb-refresh">Last refresh: {lastRefresh}</span> : null}
       </div>
     </form>

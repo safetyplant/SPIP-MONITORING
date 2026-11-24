@@ -35,7 +35,7 @@ function cleanAsset(d) {
   return { r };
 }
 
-const DUP = 'Aset dengan Distrik, Kategori, Jenis, Detail jenis, Lokasi, dan Kode aset yang sama sudah ada. Beri kode aset yang berbeda.';
+const DUP = 'Aset dengan Distrik, Kategori, Jenis, Detail jenis, Lokasi, dan Kode unit yang sama sudah ada. Beri kode unit yang berbeda.';
 
 // Edit data langsung di aplikasi. Dilindungi middleware: hanya admin yang sudah login (/api/admin/*).
 export async function POST(req) {

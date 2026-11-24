@@ -28,9 +28,13 @@ export function Legend() {
 export default function GroupedBars({ groups, height = 230 }) {
   const max = Math.max(1, ...groups.flatMap((g) => g.values));
   if (!groups.length) return <p className="empty">Tidak ada data pada filter ini.</p>;
+  // Banyak kelompok: batang dirapatkan dan label diputar, supaya semuanya muat tanpa menggeser layar.
+  const dense = groups.length > 7;
+  const longest = Math.max(...groups.map((g) => String(g.label).length));
+  const lh = Math.min(150, 16 + longest * 6.4);
   return (
     <div className="gb-scroll">
-      <div className="gb-row">
+      <div className={`gb-row${dense ? ' dense' : ''}`} style={{ '--lh': `${lh}px` }}>
         {groups.map((g, gi) => (
           <div className="gb-group" key={g.key} title={g.label}>
             <div className="gb-plot" style={{ height }}>

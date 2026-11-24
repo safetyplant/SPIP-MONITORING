@@ -8,6 +8,7 @@ const ITEMS = [
   ['/admin', 'Dashboard Summary SPIP'],
   ['/admin/achievement', 'Achievement SPIP'],
   ['/admin/mapping', 'Mapping Detail Jenis & Lokasi'],
+  ['/admin/riwayat', 'Riwayat'],
   ['/admin/temuan', 'Temuan'],
   ['/admin/qr', 'QR'],
   ['/admin/checklist', 'Checklist'],

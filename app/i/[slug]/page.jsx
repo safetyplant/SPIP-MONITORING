@@ -3,6 +3,7 @@ import { db } from '@/lib/db';
 import { templateFor, publicTemplates } from '@/lib/checklists';
 import { resolveKategori, KATEGORI } from '@/lib/spip';
 import { jakartaToday, addDays } from '@/lib/format';
+import { monthlyMap } from '@/lib/history';
 import { SLUG_RE } from '@/lib/validate';
 import Checklist from './Checklist';
 
@@ -14,7 +15,7 @@ async function loadAsset(slug) {
   if (!SLUG_RE.test(slug)) return null;
   const rows = await db()`
     SELECT id, slug, distrik, dept, kategori, jenis, detail_jenis, lokasi, kode_aset, periode, is_active,
-           last_inspection::text AS last_inspection, has_finding, followed_up
+           last_inspection::text AS last_inspection, first_inspection::text AS first_inspection, has_finding, followed_up
       FROM assets WHERE slug = ${slug}`;
   return rows[0] || null;
 }
@@ -29,15 +30,17 @@ export default async function Page({ params }) {
   if (!asset) notFound();
 
   const sql = db();
-  const [history, last] = await Promise.all([
+  const year = Number(jakartaToday().slice(0, 4));
+  const [history, last, months] = await Promise.all([
     sql`SELECT inspected_on::text AS date, result FROM inspections
          WHERE asset_id = ${asset.id} AND kind = 'inspeksi'
-         ORDER BY inspected_on DESC, id DESC LIMIT 3`,
+         ORDER BY inspected_on DESC, id DESC LIMIT 6`,
     asset.has_finding && !asset.followed_up
       ? sql`SELECT items, inspected_on::text AS date FROM inspections
              WHERE asset_id = ${asset.id} AND kind = 'inspeksi'
              ORDER BY inspected_on DESC, id DESC LIMIT 1`
       : Promise.resolve([]),
+    monthlyMap([asset], year),
   ]);
 
   const kategori = resolveKategori(asset.kategori, asset.jenis, asset.detail_jenis);
@@ -67,6 +70,8 @@ export default async function Page({ params }) {
       tplKey={tpl.k}
       templates={publicTemplates()}
       history={history}
+      months={months[asset.id] || Array(12).fill(0)}
+      year={year}
       findings={findings}
       hasOpenFinding={asset.has_finding && !asset.followed_up}
       today={today}

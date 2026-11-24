@@ -52,12 +52,19 @@ git push -u origin main
 - **Admin** masuk di `/login` dengan kunci admin: `ADMIN_PASSWORD` (environment variable) atau kata sandi bawaan `kb17161`. Setelah login, admin bisa melihat dashboard, mengimpor Excel, menambah, mengubah, dan menghapus aset di menu Mapping.
 - **Selain admin** hanya bisa membuka link inspeksi `/i/<kode>` dan mengisi checklist. Halaman admin dan API admin selalu meminta login.
 
-## Kode aset / kode unit / kode alat
+## Kode unit
 
-- Isi lewat menu **Mapping** (Tambah aset / Edit) atau kolom **Kode Aset** di Excel (header `Kode Aset`, `Kode Unit`, atau `Kode Alat` juga dikenali).
+- Isi lewat menu **Mapping** (Tambah aset / Edit) atau kolom **Kode Unit** di Excel (header `Kode Aset` atau `Kode Alat` juga dikenali).
 - Kode tampil di tabel Mapping, label QR, halaman checklist, menu Temuan, dan ekspor Excel. Kolom ini juga bisa dicari.
 - Kode ikut membentuk identitas aset, jadi beberapa aset sejenis di lokasi yang sama (mis. 5 APAR di workshop) bisa dibedakan dengan kode berbeda.
 - Database lama: kolom dibuat otomatis saat server mulai. Bila gagal, jalankan `db/migrations/002-kode-aset.sql` di SQL Editor Neon.
+
+## Status per bulan dan riwayat
+
+- Periode bawaan Dashboard dan Achievement adalah **bulan berjalan**; tombol Bulan ini / Bulan lalu / Tahun ini ada di bawah filter.
+- Unit yang terakhir diinspeksi bulan lalu otomatis berstatus **Belum** pada bulan berjalan (Mapping, checklist, Achievement, Dashboard).
+- Achievement dan Dashboard membaca riwayat di tabel `inspections`, jadi angka bulan-bulan lama tidak berubah walau unit sudah diinspeksi lagi bulan berikutnya.
+- Menu **Riwayat**: matriks status Januari sampai Desember per kode unit, dan halaman Detail berisi semua inspeksi, pemeriksa, hasil per poin, serta tindak lanjut. Riwayat bulanan juga tampil di halaman checklist (QR).
 
 ## Bank checklist
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Logos from '@/components/Logos';
+import { MONTHS } from '@/lib/format';
 
 /* ---------- ikon ---------- */
 const Svg = ({ children, size = 20 }) => (
@@ -68,7 +69,7 @@ function Item({ i, q, val, note, onPick, onNote }) {
   );
 }
 
-export default function Checklist({ asset, kat, tplKey, templates, history, findings, hasOpenFinding, today, minDate }) {
+export default function Checklist({ asset, kat, tplKey, templates, history, months, year, findings, hasOpenFinding, today, minDate }) {
   const [tk, setTk] = useState(tplKey);
   const tpl = useMemo(() => templates.find((t) => t.key === tk) || templates[0], [tk, templates]);
   const [ans, setAns] = useState({});
@@ -198,7 +199,12 @@ export default function Checklist({ asset, kat, tplKey, templates, history, find
     window.scrollTo({ top: 0 });
   }
 
-  const status = asset.last ? `Terakhir diinspeksi ${fmtDate(asset.last)}` : 'Belum pernah diinspeksi';
+  const thisMonth = asset.last && asset.last.slice(0, 7) === today.slice(0, 7);
+  const status = thisMonth
+    ? `Sudah diinspeksi bulan ini (${fmtDate(asset.last)})`
+    : asset.last
+      ? `Belum diinspeksi bulan ini · terakhir ${fmtDate(asset.last)}`
+      : 'Belum pernah diinspeksi';
 
   return (
     <div className={`ck-page kat-${kat.key}`}>
@@ -213,7 +219,7 @@ export default function Checklist({ asset, kat, tplKey, templates, history, find
               <em>{kat.short}</em>
             </span>
           </div>
-          {asset.kode ? <p className="ck-kode"><span>Kode aset</span><b>{asset.kode}</b></p> : null}
+          {asset.kode ? <p className="ck-kode"><span>Kode unit</span><b>{asset.kode}</b></p> : null}
           <h1 className="ck-title">{asset.detail || asset.jenis}</h1>
           <p className="ck-loc"><IcPin /> {asset.lokasi || asset.distrik || 'Lokasi belum diisi'}</p>
 
@@ -228,7 +234,7 @@ export default function Checklist({ asset, kat, tplKey, templates, history, find
             <div><dt>Jenis</dt><dd>{asset.jenis || '–'}</dd></div>
             <div><dt>Periode</dt><dd>{asset.periode || '–'}</dd></div>
           </dl>
-          <p className="ck-status">{status}</p>
+          <p className={`ck-status ${thisMonth ? 'is-done' : 'is-todo'}`}>{status}</p>
         </div>
       </header>
 
@@ -358,11 +364,29 @@ export default function Checklist({ asset, kat, tplKey, templates, history, find
                   </label>
                 </section>
 
-                {history.length > 0 && (
-                  <p className="ck-history">
-                    Riwayat: {history.map((h) => `${fmtDate(h.date)} (${h.result === 'temuan' ? 'ada temuan' : 'sesuai'})`).join(' · ')}
-                  </p>
-                )}
+                <section className="ck-card ck-riwayat">
+                  <h2 className="ck-h2">Riwayat inspeksi {year}</h2>
+                  <ol className="ck-months" aria-label={`Status inspeksi per bulan tahun ${year}`}>
+                    {MONTHS.map((m, i) => {
+                      const v = months[i];
+                      const future = year === Number(today.slice(0, 4)) && i > Number(today.slice(5, 7)) - 1;
+                      const cls = v === 2 ? 'tem' : v === 1 ? 'ok' : future ? 'fut' : 'no';
+                      return (
+                        <li key={m} className={`m-${cls}`} title={v === 2 ? 'Ada temuan' : v === 1 ? 'Sudah diinspeksi' : future ? 'Belum waktunya' : 'Belum diinspeksi'}>
+                          <span>{m}</span>
+                          <b>{v === 2 ? '!' : v === 1 ? '✓' : future ? '·' : '–'}</b>
+                        </li>
+                      );
+                    })}
+                  </ol>
+                  {history.length > 0 ? (
+                    <p className="ck-history">
+                      Terakhir: {history.map((h) => `${fmtDate(h.date)} (${h.result === 'temuan' ? 'ada temuan' : 'sesuai'})`).join(' · ')}
+                    </p>
+                  ) : (
+                    <p className="ck-history">Belum ada riwayat inspeksi yang tersimpan lewat aplikasi.</p>
+                  )}
+                </section>
               </>
             )}
           </>
