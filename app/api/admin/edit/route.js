@@ -4,6 +4,7 @@ import { keyOf } from '@/lib/assetKey';
 import { resolveKategori } from '@/lib/spip';
 import { isDate, jakartaToday } from '@/lib/format';
 import { SLUG_RE } from '@/lib/validate';
+import { isUnlockedReq } from '@/lib/guard';
 
 export const runtime = 'nodejs';
 
@@ -39,6 +40,7 @@ const DUP = 'Aset dengan Distrik, Kategori, Jenis, Detail jenis, Lokasi, dan Kod
 
 // Edit data langsung di aplikasi. Dilindungi middleware: hanya admin yang sudah login (/api/admin/*).
 export async function POST(req) {
+  if (!(await isUnlockedReq(req))) return bad('Mapping terkunci. Buka kunci dengan kata sandi login.', 423);
   const body = await req.json().catch(() => null);
   if (!body) return bad('Data tidak terbaca.');
 

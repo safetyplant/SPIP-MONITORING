@@ -1,3 +1,4 @@
+import PptExport from '@/components/PptExport';
 import PrintButton from '@/components/PrintButton';
 import { TEMPLATES } from '@/lib/checklists';
 
@@ -14,6 +15,7 @@ export default function Page() {
           </div>
           <div className="row noprint">
             <a className="btn" href="/api/admin/export?type=checklists">Unduh Excel</a>
+            <PptExport query="?type=checklist" label="Unduh PPT" />
             <PrintButton label="Cetak" />
           </div>
         </div>

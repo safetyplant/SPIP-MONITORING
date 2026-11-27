@@ -1,3 +1,5 @@
+import PptExport from '@/components/PptExport';
+import { qs } from '@/lib/qs';
 import FilterForm from '@/components/FilterForm';
 import KatBadge from '@/components/KatBadge';
 import { parseFilters, statsBy, filterOptions, sumRows } from '@/lib/stats';
@@ -107,10 +109,13 @@ export default async function Page({ searchParams }) {
         <h1>Achievement inspeksi</h1>
         <p className="muted">
           ACH inspeksi = sudah inspeksi dibagi jumlah plan pada periode yang dipilih ({fmtDate(f.start)} s/d {fmtDate(f.end)}).
-          Inspeksi bulan lalu tidak dihitung pada bulan berjalan.
+          Tanpa filter tanggal, periode otomatis year to date (1 Januari sampai hari ini).
         </p>
       </div>
       <FilterForm f={f} options={options} action="/admin/achievement" />
+      <div className="row noprint" style={{ margin: '8px 0' }}>
+        <PptExport query={qs({ type: 'achievement', d: f.d, p: f.p, k: f.k, j: f.j, de: f.de, pr: f.pr, l: f.l, start: f.start, end: f.end })} label="Unduh achievement (PPT)" />
+      </div>
 
       <section className="kpis" aria-label="Ringkasan ACH per kelompok">
         {kats.map(({ k, rows }) => {

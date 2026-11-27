@@ -575,3 +575,142 @@ tr.lv0 td { background: color-mix(in srgb, var(--lime) 18%, var(--surface)); }
 .tile-kat:hover { box-shadow: 0 0 0 3px color-mix(in srgb, var(--lime) 60%, transparent); }
 .tile-total { --tc: var(--lime-2); }
 .tile .ach { font-family: var(--font-head); }
+
+/* ---------- tabel profesional: garis kolom dan baris, tanpa celah kosong ---------- */
+.tscroll { border: 1px solid var(--grid); border-radius: 10px; background: var(--surface); }
+.tscroll table { width: 100%; border-collapse: collapse; border-spacing: 0; }
+.tscroll th, .tscroll td { border: 1px solid var(--grid); }
+.tscroll thead th { background: linear-gradient(180deg, color-mix(in srgb, var(--teal-2) 22%, var(--surface)), color-mix(in srgb, var(--teal-2) 12%, var(--surface))); color: var(--teal-deep); border-bottom: 2px solid var(--teal); position: sticky; top: 0; z-index: 1; }
+.tscroll tbody tr:nth-child(even) td { background: color-mix(in srgb, var(--teal-2) 5%, var(--surface)); }
+.tscroll tbody tr:hover td { background: color-mix(in srgb, var(--lime) 18%, var(--surface)); }
+.tscroll tbody th[scope="row"] { background: color-mix(in srgb, var(--teal-2) 10%, var(--surface)); }
+.tscroll .no { text-align: center; width: 44px; font-weight: 700; color: var(--teal); }
+:root { --grid: #b9d6cf; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --grid: #1f6660; } }
+:root[data-theme="dark"] { --grid: #1f6660; }
+
+/* ---------- layar kunci Mapping ---------- */
+.lock-screen { min-height: 55vh; display: grid; place-items: center; padding: 24px 0; }
+.lock-card { width: min(440px, 100%); text-align: center; display: grid; gap: 12px; padding: 28px 24px; }
+.lock-card h1 { font-size: 20px; margin: 0; }
+.lock-card .field { text-align: left; }
+.lock-ic { width: 60px; height: 60px; margin: 0 auto; border-radius: 50%; display: grid; place-items: center; background: var(--lime); color: var(--teal-deep); box-shadow: 0 0 22px rgba(183, 255, 26, 0.6); }
+
+/* ---------- Temuan: peringkat dan tabel penuh ---------- */
+.sec { font-size: 17px; margin: 22px 0 8px; display: flex; align-items: center; gap: 8px; }
+.sec::before { content: ''; width: 6px; height: 18px; border-radius: 3px; background: linear-gradient(180deg, var(--lime), var(--teal-2)); }
+.gt-fit { width: 100%; }
+.gt-fit th, .gt-fit td { padding: 8px 10px; vertical-align: top; }
+.gt-fit td.saran { min-width: 280px; line-height: 1.45; }
+.tile-v-sm { font-size: 17px !important; line-height: 1.25; overflow-wrap: anywhere; }
+.rk-cell { min-width: 110px; }
+.rk-cell b { display: block; text-align: right; }
+.rk-bar { display: block; height: 7px; border-radius: 4px; background: var(--surface-2); margin-top: 3px; overflow: hidden; }
+.rk-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--teal-2), var(--lime-2)); border-radius: 4px; }
+.rk-two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 980px) { .rk-two { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tscroll thead th { color: var(--fg); } }
+:root[data-theme="dark"] .tscroll thead th { color: var(--fg); }
+
+/* ---------- checklist publik: tabel rapat dan profesional ---------- */
+.ck-page { padding-bottom: 84px; }
+.ck-wrap, .ck-main, .ck-bar-in { max-width: 860px; }
+.ck-hero { padding: 16px 0 30px; }
+.ck-eyebrow { margin-bottom: 8px; }
+.ck-katchip { margin-bottom: 8px; }
+.ck-title { font-size: 22px; line-height: 1.2; margin: 0 0 2px; }
+.ck-loc { margin: 0 0 10px; font-size: 13px; }
+.ck-keterangan { padding: 8px 12px; font-size: 12.5px; line-height: 1.45; }
+.ck-main { margin-top: -18px; }
+.ck-card { border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; box-shadow: none; border: 1px solid var(--grid); }
+.ck-h2 { font-size: 14px; margin: 0 0 8px; }
+.ck-status { margin-top: 8px; }
+.ck-banner { border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; }
+
+.ck-info { width: 100%; border-collapse: collapse; margin-top: 10px; background: rgba(255, 255, 255, 0.07); font-size: 13px; }
+.ck-info th, .ck-info td { border: 1px solid rgba(255, 255, 255, 0.28); padding: 6px 10px; text-align: left; overflow-wrap: anywhere; }
+.ck-info th { width: 14%; font-weight: 600; font-size: 12px; background: rgba(255, 255, 255, 0.12); white-space: nowrap; }
+.ck-info td { width: 36%; font-weight: 600; }
+
+.ck-grid2 { gap: 10px; }
+.ck-field > span { margin-bottom: 3px; }
+
+.ck-list-h { margin: 0 0 8px; align-items: flex-start; }
+.ck-progress { margin-bottom: 8px; }
+.ck-tbl-wrap { border: 1px solid var(--grid); border-radius: 6px; overflow: hidden; }
+.ck-tbl { width: 100%; border-collapse: collapse; table-layout: fixed; background: var(--surface); }
+.ck-tbl th, .ck-tbl td { border: 1px solid var(--grid); padding: 0; vertical-align: middle; }
+.ck-tbl thead th { background: linear-gradient(180deg, #0f8f86, #0b6f68); color: #fff; font-size: 12px; padding: 7px 4px; text-align: center; border-color: #0a5f59; }
+.ck-tbl thead th.ck-c-q { text-align: left; padding-left: 10px; }
+.ck-tbl .ck-c-no { width: 34px; text-align: center; font-size: 12px; font-weight: 700; color: var(--muted); }
+.ck-tbl .ck-c-opt { width: 54px; text-align: center; }
+.ck-tbl .ck-c-q { padding: 7px 10px; font-size: 14px; line-height: 1.4; overflow-wrap: anywhere; }
+.ck-tbl tbody tr:nth-child(odd) { background: var(--surface-2); }
+.ck-row.is-tem, .ck-row-note { background: var(--warn-bg) !important; }
+.ck-row.is-ok .ck-c-no { background: color-mix(in srgb, var(--lime) 45%, var(--surface)); color: #1e5a00; }
+.ck-row.is-tem .ck-c-no { background: var(--c-tem); color: #fff; }
+.ck-row.is-na { opacity: 0.8; }
+.ck-tbl .ck-opt { width: 100%; min-height: 44px; border: 0; border-radius: 0; background: transparent; padding: 0; color: var(--muted); }
+.ck-tbl .ck-opt svg { opacity: 0.55; }
+.ck-tbl .ck-opt.on svg { opacity: 1; }
+.ck-tbl .ck-opt.on.ok { background: #0d9488; color: #fff; }
+.ck-tbl .ck-opt.on.tem { background: var(--c-tem); color: #fff; }
+.ck-tbl .ck-opt.on.na { background: var(--muted); color: #fff; }
+.ck-tbl-wrap .ck-note { width: 100%; margin: 4px 0; border-radius: 6px; }
+.ck-row-note td { padding: 4px 8px; }
+.ck-bar-in .ck-btn { padding: 11px 22px; }
+.ck-months { margin-bottom: 8px; }
+.ck-history { padding-left: 0; }
+@media (max-width: 520px) {
+  .ck-info th { width: 17%; font-size: 11px; padding: 5px 6px; }
+  .ck-info td { font-size: 12px; padding: 5px 6px; }
+  .ck-tbl .ck-c-opt { width: 46px; }
+  .ck-tbl thead th { font-size: 10.5px; }
+  .ck-tbl .ck-c-q { font-size: 13.5px; padding: 6px 8px; }
+}
+
+/* ---------- pratinjau PPT dan QR ---------- */
+.pv-back { position: fixed; inset: 0; background: rgba(4, 30, 28, 0.62); z-index: 100; display: grid; place-items: center; padding: 12px; }
+.pv-modal { background: var(--surface); border: 2px solid var(--teal); border-radius: 12px; width: min(1240px, 100%); height: min(860px, 100%); display: flex; flex-direction: column; overflow: hidden; }
+.pv-modal.pv-sm { width: min(900px, 100%); height: auto; max-height: 100%; overflow: auto; }
+.pv-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; background: linear-gradient(135deg, #0b7f77, #0d9488); color: #fff; border-bottom: 3px solid var(--lime); flex-wrap: wrap; }
+.pv-body { display: grid; grid-template-columns: 230px 1fr; min-height: 0; flex: 1; }
+.pv-list { list-style: none; margin: 0; padding: 0; overflow: auto; border-right: 1px solid var(--grid); background: var(--surface-2); }
+.pv-list button { display: flex; gap: 8px; width: 100%; text-align: left; padding: 8px 10px; border: 0; border-bottom: 1px solid var(--grid); background: transparent; color: var(--fg); cursor: pointer; font-size: 12.5px; }
+.pv-list button.on { background: color-mix(in srgb, var(--lime) 40%, var(--surface)); font-weight: 700; }
+.pv-list button span { flex: none; width: 22px; color: var(--muted); }
+.pv-edit { padding: 12px; overflow: auto; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.pv-tools { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.pv-doc { flex: 1; min-width: 160px; }
+.pv-slide { border: 1px solid var(--grid); border-top: 8px solid var(--teal); border-radius: 6px; padding: 12px; display: grid; gap: 8px; background: var(--surface); }
+.pv-slide.t-cover { background: #073b37; border-top-color: var(--lime); }
+.pv-slide.t-cover input { background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.3); }
+.pv-title { font-size: 18px; font-weight: 700; }
+.pv-slide input, .pv-slide textarea { width: 100%; }
+.pv-slide td input, .pv-slide th input { border: 0; border-radius: 0; padding: 5px 6px; min-width: 70px; background: transparent; font-size: 12.5px; }
+.pv-slide th input { font-weight: 700; color: inherit; }
+.pv-kpis { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
+.pv-kpis > div { border: 1px solid var(--grid); border-radius: 6px; padding: 6px; display: grid; gap: 4px; }
+.pv-kpis .big { font-size: 22px; font-weight: 700; }
+.pv-qrs { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 8px; }
+.pv-qrs > div { display: flex; gap: 8px; border: 1px solid var(--grid); padding: 6px; border-radius: 6px; }
+.pv-qrs span { display: grid; gap: 4px; flex: 1; min-width: 0; }
+.pv-qrbody { display: grid; grid-template-columns: minmax(0, 340px) 1fr; gap: 14px; padding: 14px; }
+.pv-qrprev { border: 1px solid var(--grid); border-radius: 6px; overflow: hidden; background: #fff; }
+.pv-qrform { display: grid; gap: 10px; align-content: start; }
+@media (max-width: 720px) {
+  .pv-body { grid-template-columns: 1fr; grid-template-rows: 130px 1fr; }
+  .pv-list { border-right: 0; border-bottom: 1px solid var(--grid); }
+  .pv-qrbody { grid-template-columns: 1fr; }
+}
+.ck-field input, .ck-field select, .ck-field textarea, .ck-tbl-wrap .ck-note { width: 100%; box-sizing: border-box; }
+.ck-list-h .ck-link { white-space: nowrap; }
+.ck-tbl th, .ck-tbl td { white-space: normal; position: static; }
+.ck-tbl td.ck-c-q { text-align: left; }
+.ck-tbl td.ck-c-no, .ck-tbl td.ck-c-opt { text-align: center; }
+.ck-info th, .ck-info td { text-align: left; position: static; }
+.ck-info th { white-space: nowrap; }
+.ck-info td { white-space: normal; }
+.ck-tbl thead th.ck-c-no { color: #fff; }
+@media (max-width: 520px) { .ck-tbl .ck-c-opt { width: 40px; } .ck-tbl .ck-c-no { width: 28px; } }
+.pv-slide td input, .pv-slide th input { min-width: 140px; }

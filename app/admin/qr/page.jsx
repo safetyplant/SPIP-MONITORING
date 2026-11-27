@@ -2,6 +2,8 @@ import Link from 'next/link';
 import QRCode from 'qrcode';
 import KatBadge from '@/components/KatBadge';
 import PrintButton from '@/components/PrintButton';
+import QrDownload from '@/components/QrDownload';
+import PptExport from '@/components/PptExport';
 import FilterForm from '@/components/FilterForm';
 import { db } from '@/lib/db';
 import { filterOptions } from '@/lib/stats';
@@ -75,7 +77,10 @@ export default async function Page({ searchParams }) {
       </div>
       <div className="row spread noprint">
         <span className="muted small">{total.toLocaleString('id-ID')} aset aktif · halaman {page} dari {pages}</span>
-        <PrintButton label="Cetak label" />
+        <div className="row">
+          <PptExport type="qr" query={qs({ type: 'qr', ...keep })} label="Unduh semua (PPT)" />
+          <PrintButton label="Cetak label" />
+        </div>
       </div>
 
       <div className="qr-grid">
@@ -88,6 +93,7 @@ export default async function Page({ searchParams }) {
               <strong>{r.detail_jenis || r.jenis}</strong>
               <span>{r.lokasi}</span>
               <small>{base.replace(/^https?:\/\//, '')}/i/{r.slug}</small>
+              <QrDownload url={`${base}/i/${r.slug}`} slug={r.slug} kode={r.kode_aset || ''} title={r.detail_jenis || r.jenis || ''} lokasi={r.lokasi || ''} kategori={r.kategori || ''} />
             </figcaption>
           </figure>
         ))}

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import PptExport from '@/components/PptExport';
 import FilterForm from '@/components/FilterForm';
 import KatBadge from '@/components/KatBadge';
 import Logos from '@/components/Logos';
@@ -77,7 +78,7 @@ export default async function Page({ searchParams }) {
       </header>
       <div className="card empty">
         <h1>Belum ada data aset</h1>
-        <p className="muted">Tambahkan aset langsung di aplikasi (buka kunci edit dengan kata sandi edit). Setiap aset otomatis mendapat link dan QR sendiri.</p>
+        <p className="muted">Tambahkan aset langsung di aplikasi lewat menu Mapping (kunci dibuka dengan kata sandi login). Setiap aset otomatis mendapat link dan QR sendiri.</p>
         <div className="row" style={{ justifyContent: 'center' }}>
           <Link className="btn primary" href="/admin/mapping">Tambah aset langsung</Link>
           <Link className="btn ghost" href="/admin/import">Atau impor dari Excel</Link>
@@ -117,6 +118,9 @@ export default async function Page({ searchParams }) {
       </header>
 
       <FilterForm f={f} options={options} action="/admin" full lastRefresh={meta[0].refreshed} />
+      <div className="row noprint" style={{ margin: '8px 0' }}>
+        <PptExport query={qs({ type: 'dashboard', d: f.d, p: f.p, k: f.k, j: f.j, de: f.de, pr: f.pr, l: f.l, start: f.start, end: f.end })} label="Unduh dashboard (PPT)" />
+      </div>
 
       <Panel title="Implementasi Kategori SPIP">
         <GroupedBars groups={katGroups} />

@@ -1,3 +1,4 @@
+import PptExport from '@/components/PptExport';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import KatBadge from '@/components/KatBadge';
@@ -46,6 +47,7 @@ export default async function Page({ params }) {
             <p className="muted">{[a.lokasi, a.distrik, a.dept, a.periode].filter(Boolean).join(' · ')}</p>
           </div>
           <div className="row noprint">
+            <PptExport query={`?type=unit&slug=${a.slug}`} label="Unduh PPT" />
             <Link className="btn primary" href={`/i/${a.slug}`} target="_blank">Isi checklist</Link>
             <Link className="btn" href="/admin/mapping">Mapping</Link>
           </div>

@@ -49,6 +49,7 @@ git push -u origin main
 
 ## Akses dan edit data
 
+- **Mapping Detail Jenis & Lokasi terkunci**: buka dengan kata sandi yang sama dengan kata sandi login (berlaku 2 jam, bisa dikunci kembali). Perubahan data aset juga ditolak server bila Mapping masih terkunci.
 - **Admin** masuk di `/login` dengan kunci admin: `ADMIN_PASSWORD` (environment variable) atau kata sandi bawaan `kb17161`. Setelah login, admin bisa melihat dashboard, mengimpor Excel, menambah, mengubah, dan menghapus aset di menu Mapping.
 - **Selain admin** hanya bisa membuka link inspeksi `/i/<kode>` dan mengisi checklist. Halaman admin dan API admin selalu meminta login.
 
@@ -61,7 +62,7 @@ git push -u origin main
 
 ## Status per bulan dan riwayat
 
-- Periode bawaan Dashboard dan Achievement adalah **bulan berjalan**; tombol Bulan ini / Bulan lalu / Tahun ini ada di bawah filter.
+- Periode bawaan Dashboard dan Achievement adalah **year to date** (1 Januari sampai hari ini) bila tidak ada filter tanggal; tombol Bulan ini / Bulan lalu / Tahun ini ada di bawah filter.
 - Unit yang terakhir diinspeksi bulan lalu otomatis berstatus **Belum** pada bulan berjalan (Mapping, checklist, Achievement, Dashboard).
 - Achievement dan Dashboard membaca riwayat di tabel `inspections`, jadi angka bulan-bulan lama tidak berubah walau unit sudah diinspeksi lagi bulan berikutnya.
 - Menu **Riwayat**: matriks status Januari sampai Desember per kode unit, dan halaman Detail berisi semua inspeksi, pemeriksa, hasil per poin, serta tindak lanjut. Riwayat bulanan juga tampil di halaman checklist (QR).
@@ -89,3 +90,13 @@ Logo KPP Mining, CISS, dan ASTO ada di `public/logos` (kpp.png, ciss.png, asto.p
 - Poin checklist adalah draf. Cocokkan dengan SOP perusahaan di `lib/checklists.js`.
 - Kode ditulis tanpa bisa dijalankan di lingkungan pembuatnya. Jalankan `npm install && npm run build` dulu dan perbaiki bila ada error kecil.
 - Impor mode "Samakan dengan file" tidak menghapus aset, hanya menandai tidak aktif, sehingga riwayat tetap aman.
+
+## Pembaruan v4
+
+- **Temuan**: tabel bergaris, peringkat dari terbanyak dan tersering, filter tanggal temuan, nama pemeriksa (NRP), dan saran pencegahan kecelakaan otomatis berdasarkan kata kunci temuan (lib/saran.js). Dasar regulasi pada saran adalah acuan awal, cocokkan dengan ketentuan perusahaan.
+- **Mapping terkunci**: buka dengan kata sandi yang sama dengan login (berlaku 2 jam, tombol Kunci ulang tersedia). Perubahan data juga ditolak di server bila belum dibuka.
+- **Checklist tools baru**: tyre changer, RAD, tyre inflator, jack pneumatic, impact, welding miller, acytelin, grinda tangan, cutting wheel, bor duduk, bor tangan, oven kawat las, rumah kompresor, kompresor udara, tabung kompresor, parit; poin parit juga ada di checklist Workshop.
+- **Checklist publik** berbentuk tabel rapat (No, poin, Sesuai, Temuan, N/A).
+- **QR**: tombol Unduh PNG per aset dengan pratinjau yang bisa diedit; Unduh semua lewat PPT.
+- **PPT**: semua laporan (Dashboard, Achievement, Mapping, Riwayat, Riwayat unit, Temuan, QR, Daftar checklist) punya tombol PPT. Klik, edit di pratinjau (judul, isi sel, hapus/urut slide), lalu Unduh .pptx. Pustaka pptxgenjs ada di public/vendor (tidak perlu npm).
+- **Achievement** tanpa filter tanggal otomatis year to date.

@@ -1,5 +1,8 @@
+import PptExport from '@/components/PptExport';
 import Link from 'next/link';
 import { EditBar, RowEdit } from '@/components/AssetEditor';
+import { LockScreen, RelockButton } from '@/components/MappingLock';
+import { isUnlocked } from '@/lib/guard';
 import FilterForm from '@/components/FilterForm';
 import KatBadge from '@/components/KatBadge';
 import CopyButton from '@/components/CopyButton';
@@ -33,6 +36,7 @@ function Status({ r, ms }) {
 }
 
 export default async function Page({ searchParams }) {
+  if (!(await isUnlocked())) return <LockScreen />;
   const sp = searchParams || {};
   const f = { d: one(sp.d), p: one(sp.p), k: one(sp.k), j: one(sp.j) };
   const q = one(sp.q).trim();
@@ -91,7 +95,13 @@ export default async function Page({ searchParams }) {
   return (
     <>
       <div className="page-h">
-        <h1>Mapping Detail Jenis &amp; Lokasi</h1>
+        <div className="row spread">
+          <h1>Mapping Detail Jenis &amp; Lokasi</h1>
+          <span className="row noprint">
+            <PptExport query={`?type=mapping&d=${encodeURIComponent(f.d)}&p=${encodeURIComponent(f.p)}&k=${encodeURIComponent(f.k)}&j=${encodeURIComponent(f.j)}&q=${encodeURIComponent(q)}`} label="Unduh PPT" />
+            <RelockButton />
+          </span>
+        </div>
         <p className="muted">{total.toLocaleString('id-ID')} aset. Status dihitung per bulan berjalan: unit yang belum diinspeksi bulan ini berstatus Belum.</p>
       </div>
 

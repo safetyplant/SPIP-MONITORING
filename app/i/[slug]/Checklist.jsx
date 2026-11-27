@@ -35,37 +35,41 @@ const fmtDate = (s) => {
 
 function Item({ i, q, val, note, onPick, onNote }) {
   return (
-    <li id={`ck-q-${i}`} className={`ck-item${val ? ` is-${val}` : ''}`}>
-      <div className="ck-item-h">
-        <span className="ck-num">{i + 1}</span>
-        <p>{q}</p>
-      </div>
-      <div className="ck-opts" role="radiogroup" aria-label={`Hasil poin ${i + 1}`}>
+    <>
+      <tr id={`ck-q-${i}`} className={`ck-row${val ? ` is-${val}` : ''}`}>
+        <td className="ck-c-no">{i + 1}</td>
+        <td className="ck-c-q">{q}</td>
         {OPTS.map(({ v, label, Icon }) => (
-          <button
-            key={v}
-            type="button"
-            role="radio"
-            aria-checked={val === v}
-            className={`ck-opt ${v}${val === v ? ' on' : ''}`}
-            onClick={() => onPick(i, v)}
-          >
-            <Icon />
-            <span>{label}</span>
-          </button>
+          <td key={v} className="ck-c-opt">
+            <button
+              type="button"
+              role="radio"
+              aria-checked={val === v}
+              aria-label={`${label}, poin ${i + 1}`}
+              className={`ck-opt ${v}${val === v ? ' on' : ''}`}
+              onClick={() => onPick(i, v)}
+            >
+              <Icon />
+            </button>
+          </td>
         ))}
-      </div>
+      </tr>
       {val === 'tem' && (
-        <textarea
-          className="ck-note"
-          rows={2}
-          maxLength={500}
-          placeholder="Jelaskan temuan: apa, di mana, dan seberapa parah"
-          value={note || ''}
-          onChange={(e) => onNote(i, e.target.value)}
-        />
+        <tr className="ck-row-note">
+          <td className="ck-c-no" />
+          <td colSpan={4}>
+            <textarea
+              className="ck-note"
+              rows={2}
+              maxLength={500}
+              placeholder="Jelaskan temuan: apa, di mana, dan seberapa parah"
+              value={note || ''}
+              onChange={(e) => onNote(i, e.target.value)}
+            />
+          </td>
+        </tr>
       )}
-    </li>
+    </>
   );
 }
 
@@ -228,12 +232,12 @@ export default function Checklist({ asset, kat, tplKey, templates, history, mont
             <p>{kat.desc}</p>
           </div>
 
-          <dl className="ck-meta">
-            <div><dt>Distrik</dt><dd>{asset.distrik || '–'}</dd></div>
-            <div><dt>Dept</dt><dd>{asset.dept || '–'}</dd></div>
-            <div><dt>Jenis</dt><dd>{asset.jenis || '–'}</dd></div>
-            <div><dt>Periode</dt><dd>{asset.periode || '–'}</dd></div>
-          </dl>
+          <table className="ck-info">
+            <tbody>
+              <tr><th>Distrik</th><td>{asset.distrik || '–'}</td><th>Dept</th><td>{asset.dept || '–'}</td></tr>
+              <tr><th>Jenis</th><td>{asset.jenis || '–'}</td><th>Periode</th><td>{asset.periode || '–'}</td></tr>
+            </tbody>
+          </table>
           <p className={`ck-status ${thisMonth ? 'is-done' : 'is-todo'}`}>{status}</p>
         </div>
       </header>
@@ -350,11 +354,24 @@ export default function Checklist({ asset, kat, tplKey, templates, history, mont
                     <button type="button" className="ck-link" onClick={allOk}>Isi sisanya Sesuai</button>
                   </div>
                   <div className="ck-progress" aria-hidden="true"><i style={{ width: `${pctDone}%` }} /></div>
-                  <ol className="ck-list">
-                    {tpl.items.map((q, i) => (
-                      <Item key={`${tpl.key}-${i}`} i={i} q={q} val={ans[i] && ans[i].r} note={ans[i] && ans[i].n} onPick={pick} onNote={note} />
-                    ))}
-                  </ol>
+                  <div className="ck-tbl-wrap">
+                    <table className="ck-tbl">
+                      <thead>
+                        <tr>
+                          <th className="ck-c-no">No</th>
+                          <th className="ck-c-q">Poin pemeriksaan</th>
+                          <th className="ck-c-opt ok">Sesuai</th>
+                          <th className="ck-c-opt tem">Temuan</th>
+                          <th className="ck-c-opt na">N/A</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {tpl.items.map((q, i) => (
+                          <Item key={`${tpl.key}-${i}`} i={i} q={q} val={ans[i] && ans[i].r} note={ans[i] && ans[i].n} onPick={pick} onNote={note} />
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </section>
 
                 <section className="ck-card">

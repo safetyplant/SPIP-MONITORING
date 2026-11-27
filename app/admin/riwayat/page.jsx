@@ -1,3 +1,4 @@
+import PptExport from '@/components/PptExport';
 import Link from 'next/link';
 import FilterForm from '@/components/FilterForm';
 import KatBadge from '@/components/KatBadge';
@@ -68,7 +69,10 @@ export default async function Page({ searchParams }) {
             <h1>Riwayat inspeksi per unit</h1>
             <p className="muted">Status inspeksi tiap kode unit / item per bulan. Klik Detail untuk melihat semua inspeksi, pemeriksa, dan hasil per poin.</p>
           </div>
-          <a className="btn noprint" href="/api/admin/export?type=inspections">Unduh riwayat (Excel)</a>
+          <span className="row noprint">
+            <PptExport query={qs({ type: 'riwayat', ...keep })} label="Unduh PPT" />
+            <a className="btn" href="/api/admin/export?type=inspections">Unduh riwayat (Excel)</a>
+          </span>
         </div>
       </div>
 
